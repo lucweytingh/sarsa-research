@@ -1,0 +1,40 @@
+#+BIND: org-export-use-babel nil
+#+TITLE: setup
+#+AUTHOR: Paul Lodder
+#+EMAIL: <paul_lodder@live.nl>
+#+DATE: October 7, 2021
+#+LATEX: \setlength\parindent{0pt}
+#+LaTeX_HEADER: \usepackage{minted}
+#+LATEX_HEADER: \usepackage[margin=0.8in]{geometry}
+#+LATEX_HEADER_EXTRA:  \usepackage{mdframed}
+#+LATEX_HEADER_EXTRA: \BeforeBeginEnvironment{minted}{\begin{mdframed}}
+#+LATEX_HEADER_EXTRA: \AfterEndEnvironment{minted}{\end{mdframed}}
+#+MACRO: NEWLINE @@latex:\\@@ @@html:<br>@@
+#+PROPERTY: header-args :exports both :session setup :cache :results value :product postgres
+#+OPTIONS: ^:nil
+#+SETUPFILE: https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
+#+LATEX_COMPILER: pdflatex#+BIND: org-export-use-babel nil
+* Posed questions
+** What environment(s) should you test your technique(s) on?
+Discrete environments that could relatively be discretized, such as https://gym.openai.com/envs/#toy_text
+** What methods should you compare the chosen technique to?
+SARA vs. expected SARSA
+** What hyperparameters should you set? How to ensure comparisons are fair with regard to the hyperparameters?
+The learning rate $\alpha$ and the discount factor $\gamma$. We will set the
+discount_factor to the same value in both algorithms. We will use grid search
+to find the optimal learning rate for both algorithms, and set the learning
+rate to the optimal values for each respective algorithm.
+** Which quantities do you need to measure?
+Compute time and sample efficiency, i.e. the number of samples needed for
+convergence.
+** How many random runs do you need?
+For a particular algorithm, a particular task we would like to measure our
+desired quantities using 10 different random seeds.
+* What we need
+Scripts that generates:
+- an =environment2algorithm2optimal_learning_rate=
+- an =environment2algorithm2avg_samples_used= and
+  =environment2algorithm2convergence_steps=
+
+
+
