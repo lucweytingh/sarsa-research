@@ -1,5 +1,5 @@
 #+BIND: org-export-use-babel nil
-#+TITLE: Expected Sarsa vs. regulag Sarsa
+#+TITLE: Expected Sarsa vs. regular Sarsa
 #+AUTHOR: Luc Weytingh
 #+EMAIL: <lucweytingh321@gmail.com>
 #+DATE: October 11, 2021
@@ -13,3 +13,13 @@
 #+PROPERTY: header-args :exports both :session blogpost :cache :results value
 #+OPTIONS: ^:nil
 #+LATEX_COMPILER: pdflatex
+
+
+* Introduction
+** Hypothesis
+* Method
+** Hyperparameters
+
+* Results
+
+* Conclusion
