@@ -2,7 +2,7 @@ import numpy as np
 from collections import defaultdict
 from tqdm import tqdm as _tqdm
 import time
-
+from src.utils import init_Q, get_env, EpsilonGreedyPolicy, stopping_criterion
 import matplotlib.pyplot as plt
 import sys
 import copy
@@ -10,10 +10,8 @@ import copy
 
 def sarsa(
     env,
-    policy,
-    Q,
     num_episodes,
-    stopping_criterion,
+    stopping_criterion=stopping_criterion,
     discount_factor=1.0,
     alpha=0.5,
 ):
@@ -33,6 +31,8 @@ def sarsa(
         Q is a numpy array Q[s,a] -> state-action value.
         stats is a list of tuples giving the episode lengths and returns.
     """
+    Q = init_Q(env)
+    policy = EpsilonGreedyPolicy(Q, 0.1)
     time_start = time.time()
     # Keeps track of useful statistics
     stats = []
@@ -75,10 +75,8 @@ def sarsa(
 
 def expected_sarsa(
     env,
-    policy,
-    Q,
     num_episodes,
-    stopping_criterion,
+    stopping_criterion=stopping_criterion,
     discount_factor=1.0,
     alpha=0.5,
 ):
@@ -100,8 +98,11 @@ def expected_sarsa(
         Q is a numpy array Q[s,a] -> state-action value.
         stats is a list of tuples giving the episode lengths and returns.
     """
+    Q = init_Q(env)
+    policy = EpsilonGreedyPolicy(Q, 0.1)
     time_start = time.time()
     # Keeps track of useful statistics
+
     stats = []
     diffs = []
     R = 0

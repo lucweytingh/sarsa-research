@@ -1,3 +1,4 @@
+from src.constants import NAME2ENV
 import numpy as np
 
 
@@ -43,3 +44,10 @@ def stopping_criterion(diffs):
     """given the change in return over episodes, return True iff we consider
     the algorithm converged"""
     return len(diffs) > 100 and np.mean(diffs[-100:]) < 5
+
+
+def get_env(name):
+    try:
+        return NAME2ENV[name]()
+    except KeyError:
+        raise KeyError("No such environment defined in constants.py")
