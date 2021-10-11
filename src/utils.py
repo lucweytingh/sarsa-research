@@ -47,6 +47,8 @@ def stopping_criterion(diffs):
 
 
 def get_env(name):
+    """gets initialize environment with given name by looking at
+    constants.NAME2ENV"""
     try:
         return NAME2ENV[name]()
     except KeyError:
