@@ -1,37 +1,11 @@
 import numpy as np
 from collections import defaultdict
 from tqdm import tqdm as _tqdm
+import time
 
 import matplotlib.pyplot as plt
 import sys
 import copy
-
-
-class EpsilonGreedyPolicy(object):
-    """
-    A simple epsilon greedy policy.
-    """
-
-    def __init__(self, Q, epsilon):
-        self.Q = Q
-        self.epsilon = epsilon
-
-    def sample_action(self, obs):
-        """
-        This method takes a state as input and returns an action sampled from this policy.
-
-        Args:
-            obs: current state
-
-        Returns:
-            An action (int).
-        """
-        # YOUR CODE HERE
-        if np.random.random() < self.epsilon:
-            action = np.random.choice(np.arange(self.Q.shape[1]))
-        else:
-            action = self.Q[obs].argmax()
-        return action
 
 
 def sarsa(env, policy, Q, num_episodes, discount_factor=1.0, alpha=0.5):
@@ -51,10 +25,11 @@ def sarsa(env, policy, Q, num_episodes, discount_factor=1.0, alpha=0.5):
         Q is a numpy array Q[s,a] -> state-action value.
         stats is a list of tuples giving the episode lengths and returns.
     """
-
+    time_start = time.time()
     # Keeps track of useful statistics
     stats = []
     diffs = []
+
     R = 0
     for i_episode in _tqdm(range(num_episodes)):
 
@@ -79,7 +54,9 @@ def sarsa(env, policy, Q, num_episodes, discount_factor=1.0, alpha=0.5):
             i += 1
             if done:
                 break
+        diffs.append((current_Q.argmax(1) != Q.argmax(1)).sum())
         stats.append((i, R))
+
         diff = abs(old_R - R)
         diffs.append(diff)
         stats.append((i, R))
