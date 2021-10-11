@@ -1,0 +1,15 @@
+#+BIND: org-export-use-babel nil
+#+TITLE: Expected Sarsa vs. regulag Sarsa
+#+AUTHOR: Luc Weytingh
+#+EMAIL: <lucweytingh321@gmail.com>
+#+DATE: October 11, 2021
+#+LATEX: \setlength\parindent{0pt}
+#+LaTeX_HEADER: \usepackage{minted}
+#+LATEX_HEADER: \usepackage[margin=0.8in]{geometry}
+#+LATEX_HEADER_EXTRA:  \usepackage{mdframed}
+#+LATEX_HEADER_EXTRA: \BeforeBeginEnvironment{minted}{\begin{mdframed}}
+#+LATEX_HEADER_EXTRA: \AfterEndEnvironment{minted}{\end{mdframed}}
+#+MACRO: NEWLINE @@latex:\\@@ @@html:<br>@@
+#+PROPERTY: header-args :exports both :session blogpost :cache :results value
+#+OPTIONS: ^:nil
+#+LATEX_COMPILER: pdflatex
