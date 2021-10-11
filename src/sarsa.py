@@ -39,7 +39,6 @@ def sarsa(
     diffs = []
     R = 0
     for i_episode in _tqdm(range(num_episodes)):
-
         policy.Q = Q
         state = env.reset()
         i = 0
@@ -64,13 +63,14 @@ def sarsa(
         stats.append((i, R))
         diff = abs(old_R - R)
         diffs.append(diff)
-        stats.append((i, R))
         if stopping_criterion(diffs):
             episode_lengths, episode_returns = zip(*stats)
-            return Q, (episode_lengths, episode_returns), diffs
+            time_used = time.time() - time_start
+            return Q, (episode_lengths, episode_returns), diffs, time_used
 
     episode_lengths, episode_returns = zip(*stats)
-    return Q, (episode_lengths, episode_returns), diffs
+    time_used = time.time() - time_start
+    return Q, (episode_lengths, episode_returns), diffs, time_used
 
 
 def expected_sarsa(
@@ -100,6 +100,7 @@ def expected_sarsa(
         Q is a numpy array Q[s,a] -> state-action value.
         stats is a list of tuples giving the episode lengths and returns.
     """
+    time_start = time.time()
     # Keeps track of useful statistics
     stats = []
     diffs = []
@@ -138,10 +139,11 @@ def expected_sarsa(
         stats.append((i, R))
         if stopping_criterion(diffs):
             episode_lengths, episode_returns = zip(*stats)
-            return Q, (episode_lengths, episode_returns), diffs
-
+            time_used = time.time() - time_start
+            return Q, (episode_lengths, episode_returns), diffs, time_used
+    time_used = time.time() - time_start
     episode_lengths, episode_returns = zip(*stats)
-    return Q, (episode_lengths, episode_returns), diffs
+    return Q, (episode_lengths, episode_returns), diffs, time_used
 
 
 # from windy_gridworld import WindyGridworldEnv
