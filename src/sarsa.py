@@ -1,6 +1,7 @@
 import numpy as np
 from collections import defaultdict
 from tqdm import tqdm as _tqdm
+import time
 
 import matplotlib.pyplot as plt
 import sys
@@ -23,9 +24,10 @@ def sarsa(env, policy, Q, num_episodes, discount_factor=1.0, alpha=0.5):
         Q is a numpy array Q[s,a] -> state-action value.
         stats is a list of tuples giving the episode lengths and returns.
     """
-
+    time_start = time.time()
     # Keeps track of useful statistics
     stats = []
+    diffs = []
     for i_episode in _tqdm(range(num_episodes)):
         policy.Q = Q
         state = env.reset()
@@ -47,7 +49,9 @@ def sarsa(env, policy, Q, num_episodes, discount_factor=1.0, alpha=0.5):
             i += 1
             if done:
                 break
+        diffs.append((current_Q.argmax(1) != Q.argmax(1)).sum())
         stats.append((i, R))
-
     episode_lengths, episode_returns = zip(*stats)
-    return Q, (episode_lengths, episode_returns)
+    time_end = time.time()
+    time_used = time_end - time_start
+    return Q, (episode_lengths, episode_returns), diffs

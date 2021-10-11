@@ -32,3 +32,8 @@ class EpsilonGreedyPolicy(object):
         else:
             action = self.Q[obs].argmax()
         return action
+
+
+def get_samples_used(episode_lenghts):
+    "given the outputted episode_lenghts list, returns the number of samples used"
+    return sum(episode_lenghts)
