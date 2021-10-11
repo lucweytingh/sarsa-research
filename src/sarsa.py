@@ -8,7 +8,15 @@ import sys
 import copy
 
 
-def sarsa(env, policy, Q, num_episodes, discount_factor=1.0, alpha=0.5):
+def sarsa(
+    env,
+    policy,
+    Q,
+    num_episodes,
+    stopping_criterion,
+    discount_factor=1.0,
+    alpha=0.5,
+):
     """
     SARSA algorithm: On-policy TD control. Finds the optimal epsilon-greedy policy.
 
@@ -29,7 +37,6 @@ def sarsa(env, policy, Q, num_episodes, discount_factor=1.0, alpha=0.5):
     # Keeps track of useful statistics
     stats = []
     diffs = []
-
     R = 0
     for i_episode in _tqdm(range(num_episodes)):
 
@@ -54,13 +61,11 @@ def sarsa(env, policy, Q, num_episodes, discount_factor=1.0, alpha=0.5):
             i += 1
             if done:
                 break
-        diffs.append((current_Q.argmax(1) != Q.argmax(1)).sum())
         stats.append((i, R))
-
         diff = abs(old_R - R)
         diffs.append(diff)
         stats.append((i, R))
-        if len(diffs) > 100 and np.mean(diffs[100:]) < 5:
+        if stopping_criterion(diffs):
             episode_lengths, episode_returns = zip(*stats)
             return Q, (episode_lengths, episode_returns), diffs
 
@@ -69,7 +74,13 @@ def sarsa(env, policy, Q, num_episodes, discount_factor=1.0, alpha=0.5):
 
 
 def expected_sarsa(
-    env, policy, Q, num_episodes, discount_factor=1.0, alpha=0.5
+    env,
+    policy,
+    Q,
+    num_episodes,
+    stopping_criterion,
+    discount_factor=1.0,
+    alpha=0.5,
 ):
     """
     expected SARSA algorithm: On-policy TD control. Finds the optimal epsilon-greedy policy.
@@ -78,6 +89,8 @@ def expected_sarsa(
         env: OpenAI environment.
         policy: A policy which allows us to sample actions with its sample_action method.
         Q: Q value function, numpy array Q[s,a] -> state-action value.
+        stopping_criterion: function that takes list of differences and returns
+           True if converged
         num_episodes: Number of episodes to run for.
         discount_factor: Gamma discount factor.
         alpha: TD learning rate.
@@ -123,10 +136,10 @@ def expected_sarsa(
         diff = abs(old_R - R)
         diffs.append(diff)
         stats.append((i, R))
-        print(np.mean(diffs[50:]))
-        if len(diffs) > 100 and np.mean(diffs[100:]) < 5:
+        if stopping_criterion(diffs):
             episode_lengths, episode_returns = zip(*stats)
             return Q, (episode_lengths, episode_returns), diffs
+
     episode_lengths, episode_returns = zip(*stats)
     return Q, (episode_lengths, episode_returns), diffs
 

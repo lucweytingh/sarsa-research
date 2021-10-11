@@ -37,3 +37,9 @@ class EpsilonGreedyPolicy(object):
 def get_samples_used(episode_lenghts):
     "given the outputted episode_lenghts list, returns the number of samples used"
     return sum(episode_lenghts)
+
+
+def stopping_criterion(diffs):
+    """given the change in return over episodes, return True iff we consider
+    the algorithm converged"""
+    return len(diffs) > 100 and np.mean(diffs[-100:]) < 5
