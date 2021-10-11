@@ -53,7 +53,7 @@ def sarsa(env, policy, Q, num_episodes, discount_factor=1.0, alpha=0.5):
 
     # Keeps track of useful statistics
     stats = []
-    for i_episode in tqdm(range(num_episodes)):
+    for i_episode in _tqdm(range(num_episodes)):
         policy.Q = Q
         state = env.reset()
         i = 0
@@ -78,8 +78,3 @@ def sarsa(env, policy, Q, num_episodes, discount_factor=1.0, alpha=0.5):
 
     episode_lengths, episode_returns = zip(*stats)
     return Q, (episode_lengths, episode_returns)
-
-
-def running_mean(vals, n=1):
-    cumvals = np.array(vals).cumsum()
-    return (cumvals[n:] - cumvals[:-n]) / n
