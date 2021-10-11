@@ -6,33 +6,6 @@ import matplotlib.pyplot as plt
 import sys
 
 
-class EpsilonGreedyPolicy(object):
-    """
-    A simple epsilon greedy policy.
-    """
-
-    def __init__(self, Q, epsilon):
-        self.Q = Q
-        self.epsilon = epsilon
-
-    def sample_action(self, obs):
-        """
-        This method takes a state as input and returns an action sampled from this policy.
-
-        Args:
-            obs: current state
-
-        Returns:
-            An action (int).
-        """
-        # YOUR CODE HERE
-        if np.random.random() < self.epsilon:
-            action = np.random.choice(np.arange(self.Q.shape[1]))
-        else:
-            action = self.Q[obs].argmax()
-        return action
-
-
 def sarsa(env, policy, Q, num_episodes, discount_factor=1.0, alpha=0.5):
     """
     SARSA algorithm: On-policy TD control. Finds the optimal epsilon-greedy policy.
