@@ -1,28 +1,24 @@
-import numpy as np
-from collections import defaultdict
-from tqdm import tqdm as _tqdm
 import time
+from tqdm import tqdm as _tqdm
 
-import matplotlib.pyplot as plt
-import sys
-import copy
+from src.utils import init_Q, EpsilonGreedyPolicy, stopping_criterion
 
 
 def sarsa(
     env,
-    policy,
-    Q,
     num_episodes,
-    stopping_criterion,
+    stopping_criterion=stopping_criterion,
     discount_factor=1.0,
     alpha=0.5,
 ):
     """
-    SARSA algorithm: On-policy TD control. Finds the optimal epsilon-greedy policy.
+    SARSA algorithm: On-policy TD control. Finds the optimal epsilon-greedy
+    policy.
 
     Args:
         env: OpenAI environment.
-        policy: A policy which allows us to sample actions with its sample_action method.
+        policy: A policy which allows us to sample actions with its
+        sample_action method.
         Q: Q value function, numpy array Q[s,a] -> state-action value.
         num_episodes: Number of episodes to run for.
         discount_factor: Gamma discount factor.
@@ -33,13 +29,14 @@ def sarsa(
         Q is a numpy array Q[s,a] -> state-action value.
         stats is a list of tuples giving the episode lengths and returns.
     """
+    Q = init_Q(env)
+    policy = EpsilonGreedyPolicy(Q, 0.1)
     time_start = time.time()
     # Keeps track of useful statistics
     stats = []
     diffs = []
     R = 0
     for i_episode in _tqdm(range(num_episodes)):
-
         policy.Q = Q
         state = env.reset()
         i = 0
@@ -64,30 +61,31 @@ def sarsa(
         stats.append((i, R))
         diff = abs(old_R - R)
         diffs.append(diff)
-        stats.append((i, R))
         if stopping_criterion(diffs):
             episode_lengths, episode_returns = zip(*stats)
-            return Q, (episode_lengths, episode_returns), diffs
+            time_used = time.time() - time_start
+            return Q, (episode_lengths, episode_returns), diffs, time_used
 
     episode_lengths, episode_returns = zip(*stats)
-    return Q, (episode_lengths, episode_returns), diffs
+    time_used = time.time() - time_start
+    return Q, (episode_lengths, episode_returns), diffs, time_used
 
 
 def expected_sarsa(
     env,
-    policy,
-    Q,
     num_episodes,
-    stopping_criterion,
+    stopping_criterion=stopping_criterion,
     discount_factor=1.0,
     alpha=0.5,
 ):
     """
-    expected SARSA algorithm: On-policy TD control. Finds the optimal epsilon-greedy policy.
+    expected SARSA algorithm: On-policy TD control. Finds the optimal
+    epsilon-greedy policy.
 
     Args:
         env: OpenAI environment.
-        policy: A policy which allows us to sample actions with its sample_action method.
+        policy: A policy which allows us to sample actions with its
+        sample_action method.
         Q: Q value function, numpy array Q[s,a] -> state-action value.
         stopping_criterion: function that takes list of differences and returns
            True if converged
@@ -100,7 +98,11 @@ def expected_sarsa(
         Q is a numpy array Q[s,a] -> state-action value.
         stats is a list of tuples giving the episode lengths and returns.
     """
+    Q = init_Q(env)
+    policy = EpsilonGreedyPolicy(Q, 0.1)
+    time_start = time.time()
     # Keeps track of useful statistics
+
     stats = []
     diffs = []
     R = 0
@@ -138,10 +140,11 @@ def expected_sarsa(
         stats.append((i, R))
         if stopping_criterion(diffs):
             episode_lengths, episode_returns = zip(*stats)
-            return Q, (episode_lengths, episode_returns), diffs
-
+            time_used = time.time() - time_start
+            return Q, (episode_lengths, episode_returns), diffs, time_used
+    time_used = time.time() - time_start
     episode_lengths, episode_returns = zip(*stats)
-    return Q, (episode_lengths, episode_returns), diffs
+    return Q, (episode_lengths, episode_returns), diffs, time_used
 
 
 # from windy_gridworld import WindyGridworldEnv
