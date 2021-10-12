@@ -1,0 +1,151 @@
+#+BIND: org-export-use-babel nil
+#+TITLE: poc
+#+AUTHOR: Paul Lodder
+#+EMAIL: <paul_lodder@live.nl>
+#+DATE: October 12, 2021
+#+LATEX: \setlength\parindent{0pt}
+#+LaTeX_HEADER: \usepackage{minted}
+#+LATEX_HEADER: \usepackage[margin=0.8in]{geometry}
+#+LATEX_HEADER_EXTRA:  \usepackage{mdframed}
+#+LATEX_HEADER_EXTRA: \BeforeBeginEnvironment{minted}{\begin{mdframed}}
+#+LATEX_HEADER_EXTRA: \AfterEndEnvironment{minted}{\end{mdframed}}
+#+MACRO: NEWLINE @@latex:\\@@ @@html:<br>@@
+#+PROPERTY: header-args :exports both :session poc :cache :results value :product postgres
+#+OPTIONS: ^:nil
+#+SETUPFILE: https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
+#+LATEX_COMPILER: pdflatex
+* Introduction
+Let's try to run an initial experiment. In particular, we would like to
+visualize the reward/ms and reward/sample for both sarsa and expected sarsa in
+a windy gridworld environment.
+
+#+BEGIN_SRC python
+from src import sarsa, constants, utils
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+env = utils.get_env("gridworld")
+#+END_SRC
+
+#+RESULTS:
+
+* Getting the data
+As we will run the (expected) sarsa algorithm for multiple times on the same
+algorithm, we will need to combine the following outputs in order to visualize
+the results:
+- the episode rewards
+- the episode durations (for the computation time efficiency)
+- the episode lengths (for the sample efficiency)
+#+BEGIN_SRC python
+
+_, (s_lengths0, s_rewards0, s_durations0), s_diffs0 = sarsa.sarsa(
+    env, 100, lambda *args: False
+)
+_, (es_lengths0, es_rewards0, es_durations0), s_diffs0 = sarsa.expected_sarsa(env, 100, lambda *args: False, alpha=0.85)
+#+END_SRC
+
+#+RESULTS:
+|           0 |           0 |           0 |           0 |
+| -2.06651633 | -2.44774717 | -2.53875262 |          -1 |
+| -3.12358741 | -3.06190494 |  -2.6844379 |  -2.1013254 |
+| -3.52990278 | -3.49364166 | -3.09032348 | -3.15033432 |
+|          -1 | -2.98466909 | -2.90010845 | -1.81029877 |
+| -2.10132483 | -2.50852452 | -2.36843378 | -2.11457291 |
+| -3.10271188 | -3.09686097 | -3.09889127 | -3.09887149 |
+| -2.61754733 | -3.01133681 |  -2.0417237 | -2.71673005 |
+| -2.11737549 | -2.87402769 | -2.88802704 | -2.79506905 |
+| -3.11139728 | -3.12396201 | -3.12630766 | -3.15938649 |
+| -2.10248015 | -2.87654276 | -2.08323199 | -3.49298118 |
+| -1.70472049 | -1.86984284 |          -1 | -1.09439454 |
+| -3.09052261 | -2.89491955 | -2.83954532 | -3.55520809 |
+| -3.84867041 | -2.08322644 | -2.10600543 | -2.68517107 |
+| -2.62857461 |          -1 | -1.03984485 | -2.66087293 |
+|           0 |           0 |           0 |           0 |
+
+** sample efficiency
+Our approach to combining these will be as follows:\\
+We generate a =sample2reward= (=pd.Series=) indexed by the # samples and each
+value representing how much reward was obtained at this sample. We can later
+combine these =sample2reward= by simply averaging.
+
+We would like to do a similar thing for the =time2reward=, although the
+continuity of time makes it a bit more tricky. For now we can settle on
+discretizing at the level of microsecond (1e-6s), i.e. a =mus2reward=.
+
+#+BEGIN_SRC python
+def get_sample2reward(episode_lengths, episode_rewards):
+    reward_per_sample_list = []
+    for ind, (el, er) in enumerate(zip(episode_lengths, episode_rewards)):
+        if ind == 0:
+            prev_er = er
+            continue
+        reward_per_sample_list.extend((np.arange(el) * er) + prev_er)
+        prev_er = er
+    return pd.Series(
+        data=reward_per_sample_list,
+        index=range(1, len(reward_per_sample_list) + 1),
+    )
+
+
+sample2reward0 = get_sample2reward(s_lengths0, s_diffs0)
+sample2reward0
+#+END_SRC
+
+#+RESULTS:
+|           0 |           0 |           0 |           0 |
+| -2.06651633 | -2.44774717 | -2.53875262 |          -1 |
+| -3.12358741 | -3.06190494 |  -2.6844379 |  -2.1013254 |
+| -3.52990278 | -3.49364166 | -3.09032348 | -3.15033432 |
+|          -1 | -2.98466909 | -2.90010845 | -1.81029877 |
+| -2.10132483 | -2.50852452 | -2.36843378 | -2.11457291 |
+| -3.10271188 | -3.09686097 | -3.09889127 | -3.09887149 |
+| -2.61754733 | -3.01133681 |  -2.0417237 | -2.71673005 |
+| -2.11737549 | -2.87402769 | -2.88802704 | -2.79506905 |
+| -3.11139728 | -3.12396201 | -3.12630766 | -3.15938649 |
+| -2.10248015 | -2.87654276 | -2.08323199 | -3.49298118 |
+| -1.70472049 | -1.86984284 |          -1 | -1.09439454 |
+| -3.09052261 | -2.89491955 | -2.83954532 | -3.55520809 |
+| -3.84867041 | -2.08322644 | -2.10600543 | -2.68517107 |
+| -2.62857461 |          -1 | -1.03984485 | -2.66087293 |
+|           0 |           0 |           0 |           0 |
+
+We need to think about the representation a bit more, but let's instead already
+look at the plots of just a run for both sarsa and expected sarsa
+
+
+for time:
+#+BEGIN_SRC python
+plt.clf()
+plt.plot(
+    np.cumsum(s_durations0)[:-1], utils.running_mean(s_rewards0, 2), label="sarsa"
+)
+plt.plot(
+    np.cumsum(es_durations0)[:-1],
+    utils.running_mean(es_rewards0, 2),
+    label="expected sarsa",
+)
+plt.title("gridworld")
+plt.legend()
+plt.xlabel("ms computation time")
+plt.ylabel("episodic reward")
+plt.savefig("/tmp/gridworld.png")
+plt.show()
+#+END_SRC
+
+#+RESULTS:
+|           0 |           0 |           0 |           0 |
+| -2.06651633 | -2.44774717 | -2.53875262 |          -1 |
+| -3.12358741 | -3.06190494 |  -2.6844379 |  -2.1013254 |
+| -3.52990278 | -3.49364166 | -3.09032348 | -3.15033432 |
+|          -1 | -2.98466909 | -2.90010845 | -1.81029877 |
+| -2.10132483 | -2.50852452 | -2.36843378 | -2.11457291 |
+| -3.10271188 | -3.09686097 | -3.09889127 | -3.09887149 |
+| -2.61754733 | -3.01133681 |  -2.0417237 | -2.71673005 |
+| -2.11737549 | -2.87402769 | -2.88802704 | -2.79506905 |
+| -3.11139728 | -3.12396201 | -3.12630766 | -3.15938649 |
+| -2.10248015 | -2.87654276 | -2.08323199 | -3.49298118 |
+| -1.70472049 | -1.86984284 |          -1 | -1.09439454 |
+| -3.09052261 | -2.89491955 | -2.83954532 | -3.55520809 |
+| -3.84867041 | -2.08322644 | -2.10600543 | -2.68517107 |
+| -2.62857461 |          -1 | -1.03984485 | -2.66087293 |
+|           0 |           0 |           0 |           0 |
