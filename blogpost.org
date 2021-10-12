@@ -1,0 +1,59 @@
+#+BIND: org-export-use-babel nil
+#+TITLE: A comparison between regular and Expected SARSA
+#+AUTHOR: Luc Weytingh
+#+EMAIL: <lucweytingh321@gmail.com>
+#+DATE: October 11, 2021
+#+LATEX: \setlength\parindent{0pt}
+#+LaTeX_HEADER: \usepackage{minted}
+#+LATEX_HEADER: \usepackage[margin=0.8in]{geometry}
+#+LATEX_HEADER_EXTRA:  \usepackage{mdframed}
+#+LATEX_HEADER_EXTRA: \BeforeBeginEnvironment{minted}{\begin{mdframed}}
+#+LATEX_HEADER_EXTRA: \AfterEndEnvironment{minted}{\end{mdframed}}
+#+MACRO: NEWLINE @@latex:\\@@ @@html:<br>@@
+#+PROPERTY: header-args :exports both :session blogpost :cache :results value
+#+OPTIONS: ^:nil
+#+LATEX_COMPILER: pdflatex
+
+
+* Introduction
+Methods based on Temporal Difference (TD) learning form a central and novel
+role within Reinforcement Learning (RL). A big advantage of TD methods over
+earlier approaches is that they work in an online setting with no previous
+knowledge of the environment dynamics.
+
+Two main approaches can be identified within the TD methods: on-policy and
+off-policy methods. On-policy methods are generally simpler methods. They
+generate behaviour and update their action-value estimates using the same
+policy. To ensure exploration, a random action is chosen according to some
+probability $\epsilon$. Due to this random selection of actions, the learned
+action-value estimates are not for the optimal policy, but for a near-optimal
+policy that explores randomly. Off-policy methods split the behaviour
+generation and action-value updates into two, using a target policy to learn
+the optimal policy and a behaviour policy to generate behaviour. This generally
+results in a more powerful and general policy, at the cost of slower
+convergence [TODO: REFERENCE to RL book].
+
+In this blogpost, we compare two TD methods to confirm this [TODO: nagaan
+of this goed terugrefereert] theoretical trade-off between compute time and
+sample efficiency: SARSA and Expected SARSA. The former uses an on-policy
+approach and the latter uses an off-policy approach. [OPTIONAL] Expected SARSA
+is very similar to a more widely known and used off-policy TD-method called
+Q-learning. The difference lies within the generation of the actions: while
+Q-learning takes the maximum valued action to generate behaviour, Expected
+SARSA uses the expected value of each action, thereby taking into account the
+probability of each action under the current policy. [/OPTIONAL]
+
+We investigate the differences in several non-continuous environments from the
+open source gym library [TODO: reference], reporting on the differences in
+ compute-time and sample-efficiency and their origin.
+
+
+# HYPOTHESE
+
+** Hypothesis
+* Method
+** Hyperparameters
+
+* Results
+
+* Conclusion
