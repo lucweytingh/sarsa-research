@@ -1,0 +1,14 @@
+#+BIND: org-export-use-babel nil
+#+TITLE: README
+* Setting up
+Make a virtualenv in python3.8 and install the requirements in
+=requirements.txt= as follows:
+#+BEGIN_SRC sh
+pip install -r requirements.txt
+#+END_SRC
+Also install the =src= folder in editable mode by running the following in the
+root directory of this project (make sure you are in your virtualenv):
+#+BEGIN_SRC sh
+pip install -e .
+#+END_SRC
+
