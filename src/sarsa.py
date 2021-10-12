@@ -1,11 +1,7 @@
-import numpy as np
-from collections import defaultdict
-from tqdm import tqdm as _tqdm
 import time
-from src.utils import init_Q, get_env, EpsilonGreedyPolicy, stopping_criterion
-import matplotlib.pyplot as plt
-import sys
-import copy
+from tqdm import tqdm as _tqdm
+
+from src.utils import init_Q, EpsilonGreedyPolicy, stopping_criterion
 
 
 def sarsa(
@@ -16,11 +12,13 @@ def sarsa(
     alpha=0.5,
 ):
     """
-    SARSA algorithm: On-policy TD control. Finds the optimal epsilon-greedy policy.
+    SARSA algorithm: On-policy TD control. Finds the optimal epsilon-greedy
+    policy.
 
     Args:
         env: OpenAI environment.
-        policy: A policy which allows us to sample actions with its sample_action method.
+        policy: A policy which allows us to sample actions with its
+        sample_action method.
         Q: Q value function, numpy array Q[s,a] -> state-action value.
         num_episodes: Number of episodes to run for.
         discount_factor: Gamma discount factor.
@@ -81,11 +79,13 @@ def expected_sarsa(
     alpha=0.5,
 ):
     """
-    expected SARSA algorithm: On-policy TD control. Finds the optimal epsilon-greedy policy.
+    expected SARSA algorithm: On-policy TD control. Finds the optimal
+    epsilon-greedy policy.
 
     Args:
         env: OpenAI environment.
-        policy: A policy which allows us to sample actions with its sample_action method.
+        policy: A policy which allows us to sample actions with its
+        sample_action method.
         Q: Q value function, numpy array Q[s,a] -> state-action value.
         stopping_criterion: function that takes list of differences and returns
            True if converged
