@@ -1,12 +1,13 @@
-from sarsa import expected_sarsa, sarsa, NAME2ALG
-from envs.windy_gridworld import WindyGridworldEnv
-from utils import EpsilonGreedyPolicy, init_Q
-from constants import ENV_NAMES
 from collections import defaultdict
 
 import gym
 import numpy as np
 import json
+
+from src.sarsa import expected_sarsa, sarsa, NAME2ALG
+from src.envs.windy_gridworld import WindyGridworldEnv
+from src.utils import EpsilonGreedyPolicy, init_Q
+from src.constants import ENV_NAMES
 
 
 def perform_grid_search(sarsa_alg, env, repeats=5, alphas=20):
@@ -41,7 +42,6 @@ if __name__ == "__main__":
     env2alg2alpha = defaultdict(dict)
     for env_name in ENV_NAMES:
         env = gym.make(env_name)
-        breakpoint()
         for alg_name, alg in NAME2ALG.items():
             print(f"{env_name},{alg_name}")
             env2alg2alpha[env_name][alg_name] = perform_grid_search(

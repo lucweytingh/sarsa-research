@@ -5,23 +5,12 @@ from collections import defaultdict
 
 def init_Q(env):
     "initialize empty Q table given the environment"
-    # breakpoint()
-    if (
-        len(env.observation_space.shape) > 1
-        or len(env.action_space.spaces) > 1
-    ):
-        return dictQ(env)
-    else:
-        return matrixQ(env)
+    return dictQ(env)
 
 
-def float_ddict():
-    return defaultdict(float)
-
-
-class dictQ:
+class dictQn:
     def __init__(self, env):
-        self.state2action2Q = defaultdict(float_ddict)
+        self.state2action2Q = defaultdict(dict)
         self.env = env
         self.action_space = env.action_space
 
@@ -30,10 +19,10 @@ class dictQ:
         if len(action2Q.keys()) == 0:
             return self.action_space.sample()
         else:
-            return max(action2Q, key=action2Q.get)
+            return max(action2Q.keys(), key=action2Q.get)
 
     def get(self, state, action):
-        return self.state2action2Q[state][action]
+        return self.state2action2Q[state].get(action, 0.0)
 
     def set(self, state, action, value):
         self.state2action2Q[state][action] = value
@@ -86,7 +75,7 @@ def get_samples_used(episode_lenghts):
     return sum(episode_lenghts)
 
 
-def get_noXgf_actions(env):
+def get_nof_actions(env):
     if type(env.action_space) == gym.spaces.tuple_space.Tuple:
         return np.prod([act_space.n for act_space in env.action_space.spaces])
     return env.action_space.n
