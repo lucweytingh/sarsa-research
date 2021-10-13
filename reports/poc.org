@@ -37,11 +37,10 @@ the results:
 - the episode durations (for the computation time efficiency)
 - the episode lengths (for the sample efficiency)
 #+BEGIN_SRC python
-
 _, (s_lengths0, s_rewards0, s_durations0), s_diffs0 = sarsa.sarsa(
-    env, 100, lambda *args: False
+    env, 100, stopping_criterion="never"
 )
-_, (es_lengths0, es_rewards0, es_durations0), s_diffs0 = sarsa.expected_sarsa(env, 100, lambda *args: False, alpha=0.85)
+_, (es_lengths0, es_rewards0, es_durations0), s_diffs0 = sarsa.expected_sarsa(env, 100, stopping_criterion="never", alpha=0.85)
 #+END_SRC
 
 #+RESULTS:
