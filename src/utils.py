@@ -1,4 +1,3 @@
-from src.constants import NAME2ENV
 import numpy as np
 
 
