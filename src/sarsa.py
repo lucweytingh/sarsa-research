@@ -1,13 +1,12 @@
 import time
 from tqdm import tqdm as _tqdm
 
-from src.utils import init_Q, EpsilonGreedyPolicy, stopping_criterion
+from src.utils import init_Q, EpsilonGreedyPolicy
 
 
 def sarsa(
     env,
     num_episodes,
-    stopping_criterion=stopping_criterion,
     discount_factor=1.0,
     alpha=0.5,
 ):
@@ -29,6 +28,7 @@ def sarsa(
         Q is a numpy array Q[s,a] -> state-action value.
         stats is a list of tuples giving the episode lengths and returns.
     """
+
     Q = init_Q(env)
     policy = EpsilonGreedyPolicy(Q, 0.1)
     # Keeps track of useful statistics
@@ -36,7 +36,7 @@ def sarsa(
     diffs = []
     R = 0
     for i_episode in _tqdm(range(num_episodes)):
-        episode_start = time.time()
+        start_time = time.time()
         policy.Q = Q
         state = env.reset()
         i = 0
@@ -58,26 +58,16 @@ def sarsa(
             i += 1
             if done:
                 break
-        episode_duration = time.time() - episode_start
-        stats.append((i, R, episode_duration))
-        diff = abs(old_R - R)
-        diffs.append(diff)
-        if stopping_criterion(diffs):
-            episode_lengths, episode_returns, episode_durations = zip(*stats)
-            return (
-                Q,
-                (episode_lengths, episode_returns, episode_durations),
-                diffs,
-            )
+        T = time.time() - start_time
+        stats.append((i, R, T))
 
-    episode_lengths, episode_returns, episode_durations = zip(*stats)
-    return Q, (episode_lengths, episode_returns, episode_durations), diffs
+    episode_lengths, episode_returns, episode_times = zip(*stats)
+    return Q, (episode_lengths, episode_returns, episode_times), diffs
 
 
 def expected_sarsa(
     env,
     num_episodes,
-    stopping_criterion=stopping_criterion,
     discount_factor=1.0,
     alpha=0.5,
 ):
@@ -90,7 +80,6 @@ def expected_sarsa(
         policy: A policy which allows us to sample actions with its
         sample_action method.
         Q: Q value function, numpy array Q[s,a] -> state-action value.
-        stopping_criterion: function that takes list of differences and returns
            True if converged
         num_episodes: Number of episodes to run for.
         discount_factor: Gamma discount factor.
@@ -101,9 +90,9 @@ def expected_sarsa(
         Q is a numpy array Q[s,a] -> state-action value.
         stats is a list of tuples giving the episode lengths and returns.
     """
+
     Q = init_Q(env)
     policy = EpsilonGreedyPolicy(Q, 0.1)
-    time_start = time.time()
     # Keeps track of useful statistics
 
     stats = []
@@ -115,7 +104,7 @@ def expected_sarsa(
         old_R = R
         R = 0
         a = policy.sample_action(s)
-        episode_start = time.time()
+        start_time = time.time()
         while True:
             s_, r, done, _ = env.step(a)
             a_ = policy.sample_action(s_)
@@ -139,22 +128,19 @@ def expected_sarsa(
             i += 1
             if done:
                 break
-        episode_duration = time.time() - episode_start
-        diff = abs(old_R - R)
-        diffs.append(diff)
-        stats.append((i, R, episode_duration))
-        if stopping_criterion(diffs):
-            episode_lengths, episode_returns, episode_durations = zip(*stats)
-            return (
-                Q,
-                (episode_lengths, episode_returns, episode_durations),
-                diffs,
-            )
-    episode_lengths, episode_returns, episode_durations = zip(*stats)
-    return Q, (episode_lengths, episode_returns, episode_durations), diffs
+
+        T = time.time() - start_time
+        stats.append((i, R, T))
+    episode_lengths, episode_returns, episode_times = zip(*stats)
+    return Q, (episode_lengths, episode_returns, episode_times), diffs
+
+
+# NAME2ALG = {"expected_sarsa": expected_sarsa, "sarsa": sarsa}
 
 
 # from windy_gridworld import WindyGridworldEnv
+# import matplotlib.pyplot as plt
+# import numpy as np
 
 # env = WindyGridworldEnv()
 
@@ -164,17 +150,34 @@ def expected_sarsa(
 #     return (cumvals[n:] - cumvals[:-n]) / n
 
 
-# Q = np.zeros((env.nS, env.nA))
-# policy = EpsilonGreedyPolicy(Q, epsilon=0.1)
 # (
 #     Q_sarsa,
-#     (episode_lengths_sarsa, episode_returns_sarsa),
+#     (episode_lengths_sarsa, episode_returns_sarsa, episode_times_sarsa),
 #     diffs,
-# ) = sarsa(env, policy, Q, 1000)
+# ) = sarsa(env, 1000)
+
+# (
+#     Q_sarsa,
+#     (episode_lengths_e_sarsa, episode_returns_e_sarsa, episode_times_e_sarsa),
+#     diffs,
+# ) = expected_sarsa(env, 1000)
+
 # print(len(episode_lengths_sarsa))
 # n = 50
 # # We will help you with plotting this time
 # plt.clf()
-# plt.plot(running_mean(diffs, n))
-# plt.title("diffs")
+# plt.plot(
+#     np.cumsum(episode_times_sarsa[:-n]),
+#     running_mean(episode_returns_sarsa, n),
+#     label="sarsa",
+# )
+# plt.plot(
+#     np.cumsum(episode_times_e_sarsa[:-n]),
+#     running_mean(episode_returns_e_sarsa, n),
+#     label="expected_sarsa",
+# )
+# plt.title("Return attained during training ")
+# plt.xlabel("Time")
+# plt.ylabel("Return")
+# plt.legend()
 # plt.show()

@@ -21,7 +21,6 @@ Pygments==2.10.0
 pyparsing==2.4.7
 python-dateutil==2.8.2
 scipy==1.7.1
--e git+ssh://git@github.com/lucweytingh/sarsa-vs-expected-sarsa.git@1fe5ce75903225cc52668aa00d33868c349a98d3#egg=setup
 six==1.16.0
 torch==1.6.0
 tqdm==4.62.2
