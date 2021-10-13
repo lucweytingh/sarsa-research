@@ -1,4 +1,3 @@
-from src.constants import NAME2ENV
 import numpy as np
 from collections import defaultdict
 
@@ -81,12 +80,3 @@ def get_samples_used(episode_lenghts):
 def running_mean(vals, n=1):
     cumvals = np.array(vals).cumsum()
     return (cumvals[n:] - cumvals[:-n]) / n
-
-
-def get_env(name):
-    """gets initialize environment with given name by looking at
-    constants.NAME2ENV"""
-    try:
-        return NAME2ENV[name]()
-    except KeyError:
-        raise KeyError("No such environment defined in constants.py")
