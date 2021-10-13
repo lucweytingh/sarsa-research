@@ -12,7 +12,7 @@ conda env create --file=environment.yml
 #+END_SRC
 
 Then, in this environment, install =src= as an editable package by running:
-
 #+BEGIN_SRC sh
+conda activate sarsa_research
 pip install -e .
 #+END_SRC
