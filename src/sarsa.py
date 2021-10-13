@@ -135,49 +135,49 @@ def expected_sarsa(
     return Q, (episode_lengths, episode_returns, episode_times), diffs
 
 
-NAME2ALG = {"expected_sarsa": expected_sarsa, "sarsa": sarsa}
+# NAME2ALG = {"expected_sarsa": expected_sarsa, "sarsa": sarsa}
 
 
-from windy_gridworld import WindyGridworldEnv
-import matplotlib.pyplot as plt
-import numpy as np
+# from windy_gridworld import WindyGridworldEnv
+# import matplotlib.pyplot as plt
+# import numpy as np
 
-env = WindyGridworldEnv()
-
-
-def running_mean(vals, n=1):
-    cumvals = np.array(vals).cumsum()
-    return (cumvals[n:] - cumvals[:-n]) / n
+# env = WindyGridworldEnv()
 
 
-(
-    Q_sarsa,
-    (episode_lengths_sarsa, episode_returns_sarsa, episode_times_sarsa),
-    diffs,
-) = sarsa(env, 1000)
+# def running_mean(vals, n=1):
+#     cumvals = np.array(vals).cumsum()
+#     return (cumvals[n:] - cumvals[:-n]) / n
 
-(
-    Q_sarsa,
-    (episode_lengths_e_sarsa, episode_returns_e_sarsa, episode_times_e_sarsa),
-    diffs,
-) = expected_sarsa(env, 1000)
 
-print(len(episode_lengths_sarsa))
-n = 50
-# We will help you with plotting this time
-plt.clf()
-plt.plot(
-    np.cumsum(episode_times_sarsa[:-n]),
-    running_mean(episode_returns_sarsa, n),
-    label="sarsa",
-)
-plt.plot(
-    np.cumsum(episode_times_e_sarsa[:-n]),
-    running_mean(episode_returns_e_sarsa, n),
-    label="expected_sarsa",
-)
-plt.title("Return attained during training ")
-plt.xlabel("Time")
-plt.ylabel("Return")
-plt.legend()
-plt.show()
+# (
+#     Q_sarsa,
+#     (episode_lengths_sarsa, episode_returns_sarsa, episode_times_sarsa),
+#     diffs,
+# ) = sarsa(env, 1000)
+
+# (
+#     Q_sarsa,
+#     (episode_lengths_e_sarsa, episode_returns_e_sarsa, episode_times_e_sarsa),
+#     diffs,
+# ) = expected_sarsa(env, 1000)
+
+# print(len(episode_lengths_sarsa))
+# n = 50
+# # We will help you with plotting this time
+# plt.clf()
+# plt.plot(
+#     np.cumsum(episode_times_sarsa[:-n]),
+#     running_mean(episode_returns_sarsa, n),
+#     label="sarsa",
+# )
+# plt.plot(
+#     np.cumsum(episode_times_e_sarsa[:-n]),
+#     running_mean(episode_returns_e_sarsa, n),
+#     label="expected_sarsa",
+# )
+# plt.title("Return attained during training ")
+# plt.xlabel("Time")
+# plt.ylabel("Return")
+# plt.legend()
+# plt.show()
