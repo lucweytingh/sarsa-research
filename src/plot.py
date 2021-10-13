@@ -198,8 +198,8 @@ def plot_results(
 #     "expected sarsa": get_results(expected_sarsa),
 # }
 
-plt.close("all")
-plot_results(
-    alg2results,
-    "windygridworld",
-)
+# plt.close("all")
+# plot_results(
+#     alg2results,
+#     "windygridworld",
+# )
