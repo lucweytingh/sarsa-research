@@ -31,12 +31,12 @@ def sarsa(
     """
     Q = init_Q(env)
     policy = EpsilonGreedyPolicy(Q, 0.1)
-    time_start = time.time()
     # Keeps track of useful statistics
     stats = []
     diffs = []
     R = 0
     for i_episode in _tqdm(range(num_episodes)):
+        episode_start = time.time()
         policy.Q = Q
         state = env.reset()
         i = 0
@@ -58,17 +58,20 @@ def sarsa(
             i += 1
             if done:
                 break
-        stats.append((i, R))
+        episode_duration = time.time() - episode_start
+        stats.append((i, R, episode_duration))
         diff = abs(old_R - R)
         diffs.append(diff)
         if stopping_criterion(diffs):
-            episode_lengths, episode_returns = zip(*stats)
-            time_used = time.time() - time_start
-            return Q, (episode_lengths, episode_returns), diffs, time_used
+            episode_lengths, episode_returns, episode_durations = zip(*stats)
+            return (
+                Q,
+                (episode_lengths, episode_returns, episode_durations),
+                diffs,
+            )
 
-    episode_lengths, episode_returns = zip(*stats)
-    time_used = time.time() - time_start
-    return Q, (episode_lengths, episode_returns), diffs, time_used
+    episode_lengths, episode_returns, episode_durations = zip(*stats)
+    return Q, (episode_lengths, episode_returns, episode_durations), diffs
 
 
 def expected_sarsa(
@@ -112,6 +115,7 @@ def expected_sarsa(
         old_R = R
         R = 0
         a = policy.sample_action(s)
+        episode_start = time.time()
         while True:
             s_, r, done, _ = env.step(a)
             a_ = policy.sample_action(s_)
@@ -135,16 +139,19 @@ def expected_sarsa(
             i += 1
             if done:
                 break
+        episode_duration = time.time() - episode_start
         diff = abs(old_R - R)
         diffs.append(diff)
-        stats.append((i, R))
+        stats.append((i, R, episode_duration))
         if stopping_criterion(diffs):
-            episode_lengths, episode_returns = zip(*stats)
-            time_used = time.time() - time_start
-            return Q, (episode_lengths, episode_returns), diffs, time_used
-    time_used = time.time() - time_start
-    episode_lengths, episode_returns = zip(*stats)
-    return Q, (episode_lengths, episode_returns), diffs, time_used
+            episode_lengths, episode_returns, episode_durations = zip(*stats)
+            return (
+                Q,
+                (episode_lengths, episode_returns, episode_durations),
+                diffs,
+            )
+    episode_lengths, episode_returns, episode_durations = zip(*stats)
+    return Q, (episode_lengths, episode_returns, episode_durations), diffs
 
 
 # from windy_gridworld import WindyGridworldEnv
