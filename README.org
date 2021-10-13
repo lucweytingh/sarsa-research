@@ -1,14 +1,18 @@
 #+BIND: org-export-use-babel nil
 #+TITLE: README
-* Setting up
-Make a virtualenv in python3.8 and install the requirements in
-=requirements.txt= as follows:
+
+* Setup
+
+Make sure =conda= is installed. Then, create the =sarsa_research= conda
+environment. From the root directory of the project, run the following
+command:
+
 #+BEGIN_SRC sh
-pip install -r requirements.txt
+conda env create --file=environment.yml
 #+END_SRC
-Also install the =src= folder in editable mode by running the following in the
-root directory of this project (make sure you are in your virtualenv):
+
+Then, in this environment, install =src= as an editable package by running:
+
 #+BEGIN_SRC sh
 pip install -e .
 #+END_SRC
-
