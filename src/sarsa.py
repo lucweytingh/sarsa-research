@@ -1,13 +1,12 @@
 import time
 from tqdm import tqdm as _tqdm
 
-from src.utils import init_Q, EpsilonGreedyPolicy, resolve_stopping_criterion
+from src.utils import init_Q, EpsilonGreedyPolicy
 
 
 def sarsa(
     env,
     num_episodes,
-    stopping_criterion="mean_lt_default",
     discount_factor=1.0,
     alpha=0.5,
 ):
@@ -29,7 +28,6 @@ def sarsa(
         Q is a numpy array Q[s,a] -> state-action value.
         stats is a list of tuples giving the episode lengths and returns.
     """
-    stopping_criterion = resolve_stopping_criterion(stopping_criterion)
 
     Q = init_Q(env)
     policy = EpsilonGreedyPolicy(Q, 0.1)
@@ -70,7 +68,6 @@ def sarsa(
 def expected_sarsa(
     env,
     num_episodes,
-    stopping_criterion="mean_lt_default",
     discount_factor=1.0,
     alpha=0.5,
 ):
@@ -83,7 +80,6 @@ def expected_sarsa(
         policy: A policy which allows us to sample actions with its
         sample_action method.
         Q: Q value function, numpy array Q[s,a] -> state-action value.
-        stopping_criterion: function that takes list of differences and returns
            True if converged
         num_episodes: Number of episodes to run for.
         discount_factor: Gamma discount factor.
@@ -94,7 +90,6 @@ def expected_sarsa(
         Q is a numpy array Q[s,a] -> state-action value.
         stats is a list of tuples giving the episode lengths and returns.
     """
-    stopping_criterion = resolve_stopping_criterion(stopping_criterion)
 
     Q = init_Q(env)
     policy = EpsilonGreedyPolicy(Q, 0.1)
