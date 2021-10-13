@@ -1,9 +1,20 @@
-from src.envs.windy_gridworld import WindyGridworldEnv
-from src.envs.blackjack import BlackjackEnv
-from src.envs.gridworld import GridworldEnv
+import gym
 
-NAME2ENV = {
-    "windygridworld": WindyGridworldEnv,
-    "blackjack": BlackjackEnv,
-    "gridworld": GridworldEnv,
-}
+
+ENV_NAMES = [
+    "Copy-v0",
+    "RepeatCopy-v0",
+    "ReversedAddition-v0",
+    "ReversedAddition3-v0",
+    "DuplicatedInput-v0",
+    "Reverse-v0",
+    "Blackjack-v0",
+    "KellyCoinflip-v0",
+    "KellyCoinflipGeneralized-v0",
+    "FrozenLake-v0",
+    "FrozenLake8x8-v0",
+    "CliffWalking-v0",
+    "NChain-v0",
+    "Roulette-v0",
+    "Taxi-v2",
+]
