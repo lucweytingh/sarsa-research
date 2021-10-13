@@ -4,7 +4,11 @@ from collections import defaultdict
 
 def init_Q(env):
     "initialize empty Q table given the environment"
-    if len(env.observation_space.shape) > 1:
+    # breakpoint()
+    if (
+        len(env.observation_space.shape) > 1
+        or len(env.action_space.spaces) > 1
+    ):
         return dictQ(env)
     else:
         return matrixQ(env)
@@ -18,6 +22,7 @@ class dictQ:
     def __init__(self, env):
         self.state2action2Q = defaultdict(float_ddict)
         self.env = env
+        self.action_space = env.action_space
 
     def get_best_action(self, state):
         action2Q = self.state2action2Q[state]
@@ -32,7 +37,7 @@ class dictQ:
 
 class matrixQ:
     def __init__(self, env):
-        self.Q = np.zeros((env.nS, env.nA))
+        self.Q = np.zeros((env.observation_space.n, env.action_space.n))
         self.env = env
 
     def get_best_action(self, state):
