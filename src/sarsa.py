@@ -31,12 +31,12 @@ def sarsa(
     """
     Q = init_Q(env)
     policy = EpsilonGreedyPolicy(Q, 0.1)
-    time_start = time.time()
     # Keeps track of useful statistics
     stats = []
     diffs = []
     R = 0
     for i_episode in _tqdm(range(num_episodes)):
+        start_time = time.time()
         policy.Q = Q
         state = env.reset()
         i = 0
@@ -58,17 +58,11 @@ def sarsa(
             i += 1
             if done:
                 break
-        stats.append((i, R))
-        diff = abs(old_R - R)
-        diffs.append(diff)
-        if stopping_criterion(diffs):
-            episode_lengths, episode_returns = zip(*stats)
-            time_used = time.time() - time_start
-            return Q, (episode_lengths, episode_returns), diffs, time_used
+        T = time.time() - start_time
+        stats.append((i, R, T))
 
-    episode_lengths, episode_returns = zip(*stats)
-    time_used = time.time() - time_start
-    return Q, (episode_lengths, episode_returns), diffs, time_used
+    episode_lengths, episode_returns, episode_times = zip(*stats)
+    return Q, (episode_lengths, episode_returns, episode_times), diffs
 
 
 def expected_sarsa(
@@ -100,7 +94,6 @@ def expected_sarsa(
     """
     Q = init_Q(env)
     policy = EpsilonGreedyPolicy(Q, 0.1)
-    time_start = time.time()
     # Keeps track of useful statistics
 
     stats = []
@@ -112,6 +105,7 @@ def expected_sarsa(
         old_R = R
         R = 0
         a = policy.sample_action(s)
+        start_time = time.time()
         while True:
             s_, r, done, _ = env.step(a)
             a_ = policy.sample_action(s_)
@@ -135,20 +129,16 @@ def expected_sarsa(
             i += 1
             if done:
                 break
-        diff = abs(old_R - R)
-        diffs.append(diff)
-        stats.append((i, R))
-        if stopping_criterion(diffs):
-            episode_lengths, episode_returns = zip(*stats)
-            time_used = time.time() - time_start
-            return Q, (episode_lengths, episode_returns), diffs, time_used
-    time_used = time.time() - time_start
-    episode_lengths, episode_returns = zip(*stats)
-    return Q, (episode_lengths, episode_returns), diffs, time_used
+
+        T = time.time() - start_time
+        stats.append((i, R, T))
+    episode_lengths, episode_returns, episode_times = zip(*stats)
+    return Q, (episode_lengths, episode_returns, episode_times), diffs
 
 
 # from windy_gridworld import WindyGridworldEnv
-
+# import matplotlib.pyplot as plt
+# import numpy as np
 # env = WindyGridworldEnv()
 
 
@@ -157,17 +147,34 @@ def expected_sarsa(
 #     return (cumvals[n:] - cumvals[:-n]) / n
 
 
-# Q = np.zeros((env.nS, env.nA))
-# policy = EpsilonGreedyPolicy(Q, epsilon=0.1)
 # (
 #     Q_sarsa,
-#     (episode_lengths_sarsa, episode_returns_sarsa),
+#     (episode_lengths_sarsa, episode_returns_sarsa, episode_times_sarsa),
 #     diffs,
-# ) = sarsa(env, policy, Q, 1000)
+# ) = sarsa(env, 1000)
+
+# (
+#     Q_sarsa,
+#     (episode_lengths_e_sarsa, episode_returns_e_sarsa, episode_times_e_sarsa),
+#     diffs,
+# ) = expected_sarsa(env, 1000)
+
 # print(len(episode_lengths_sarsa))
 # n = 50
 # # We will help you with plotting this time
 # plt.clf()
-# plt.plot(running_mean(diffs, n))
-# plt.title("diffs")
+# plt.plot(
+#     np.cumsum(episode_times_sarsa[:-n]),
+#     running_mean(episode_returns_sarsa, n),
+#     label="sarsa",
+# )
+# plt.plot(
+#     np.cumsum(episode_times_e_sarsa[:-n]),
+#     running_mean(episode_returns_e_sarsa, n),
+#     label="expected_sarsa",
+# )
+# plt.title("Return attained during training ")
+# plt.xlabel("Time")
+# plt.ylabel("Return")
+# plt.legend()
 # plt.show()
