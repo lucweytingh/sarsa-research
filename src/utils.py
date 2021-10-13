@@ -1,4 +1,5 @@
 import numpy as np
+import gym
 from collections import defaultdict
 
 
@@ -84,8 +85,9 @@ def get_samples_used(episode_lenghts):
 
 def get_number_of_actions(env):
     if type(env.action_space) == gym.spaces.tuple_space.Tuple:
-        return np.prod([act_space.n for act_space in env.action_space.spaces]):
+        return np.prod([act_space.n for act_space in env.action_space.spaces])
     return env.action_space.n
+
 
 def running_mean(vals, n=1):
     cumvals = np.array(vals).cumsum()
