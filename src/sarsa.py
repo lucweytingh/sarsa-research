@@ -1,7 +1,7 @@
 import time
 from tqdm import tqdm as _tqdm
 
-from src.utils import init_Q, EpsilonGreedyPolicy
+from src.utils import init_Q, EpsilonGreedyPolicy, get_number_of_actions
 
 
 def sarsa(
@@ -100,6 +100,7 @@ def expected_sarsa(
     stats = []
     diffs = []
     R = 0
+    nA = get_number_of_actions(env)
     for i_episode in _tqdm(range(num_episodes)):
         s = env.reset()
         i = 0
@@ -111,8 +112,9 @@ def expected_sarsa(
             s_, r, done, _ = env.step(a)
             a_ = policy.sample_action(s_)
             ba = Q.get_best_action(s_)
+
             q_max = Q.get(s_, ba)
-            non_greedy_action_probability = policy.epsilon / env.action_space.n
+            non_greedy_action_probability = policy.epsilon / nA
             greedy_action_probability = (
                 (1 - policy.epsilon)
             ) + non_greedy_action_probability
@@ -120,7 +122,7 @@ def expected_sarsa(
                 Q.get(s_, i) * greedy_action_probability
                 if Q.get(s_, i) == q_max
                 else Q.get(s_, i) * non_greedy_action_probability
-                for i in range(env.action_space.n)
+                for i in range(nA)
             )
             update = Q.get(s, a) + alpha * (
                 r + discount_factor * expected_q - Q.get(s, a)

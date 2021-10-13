@@ -35,6 +35,9 @@ class dictQ:
     def get(self, state, action):
         return self.state2action2Q[state][action]
 
+    def set(self, state, action, value):
+        self.state2action2Q[state][action] = value
+
 
 class matrixQ:
     def __init__(self, env):
