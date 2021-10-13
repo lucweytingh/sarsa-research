@@ -112,7 +112,7 @@ def expected_sarsa(
             a_ = policy.sample_action(s_)
             ba = Q.get_best_action(s_)
             q_max = Q.get(s_, ba)
-            non_greedy_action_probability = policy.epsilon / env.nA
+            non_greedy_action_probability = policy.epsilon / env.action_space.n
             greedy_action_probability = (
                 (1 - policy.epsilon)
             ) + non_greedy_action_probability
