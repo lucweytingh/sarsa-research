@@ -39,28 +39,9 @@ def get_samples_used(episode_lenghts):
     return sum(episode_lenghts)
 
 
-def stopping_criterion_mean_lt(n=5, for_last=100):
-    def stopping_criterion(diffs):
-        """given the change in return over episodes, return True iff we consider
-        the algorithm converged"""
-        return len(diffs) > for_last and np.mean(diffs[-for_last:]) < n
-
-
-stopping_criteria = {
-    "mean_lt": stopping_criterion_mean_lt,
-    "mean_lt_default": stopping_criterion_mean_lt(),
-    "never": lambda *args: False,
-}
-
-
-def resolve_stopping_criterion(stopping_criterion):
-    if isinstance(stopping_criterion, str):
-        try:
-            return stopping_criteria[stopping_criterion]()
-        except KeyError:
-            raise KeyError("No such stopping_criterion defined.")
-    else:
-        return stopping_criterion
+def running_mean(vals, n=1):
+    cumvals = np.array(vals).cumsum()
+    return (cumvals[n:] - cumvals[:-n]) / n
 
 
 def get_env(name):
