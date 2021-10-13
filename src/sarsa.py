@@ -44,15 +44,17 @@ def sarsa(
         R = 0
         action = policy.sample_action(state)
         while True:
+
             (new_state, reward, done, _) = env.step(action)
             policy.Q = Q
             new_action = policy.sample_action(new_state)
             R += reward * (discount_factor ** i)
-            Q[state, action] = Q[state, action] + alpha * (
+            update = Q.get(state, action) + alpha * (
                 reward
-                + discount_factor * policy.Q[new_state, new_action]
-                - Q[state, action]
+                + discount_factor * Q.get(new_state, new_action)
+                - Q.get(state, action)
             )
+            Q.set(state, action, update)
             state = new_state
             action = new_action
             i += 1
@@ -108,20 +110,22 @@ def expected_sarsa(
         while True:
             s_, r, done, _ = env.step(a)
             a_ = policy.sample_action(s_)
-            q_max = max(Q[s_, :])
+            ba = Q.get_best_action(s_)
+            q_max = Q.get(s_, ba)
             non_greedy_action_probability = policy.epsilon / env.nA
             greedy_action_probability = (
                 (1 - policy.epsilon)
             ) + non_greedy_action_probability
             expected_q = sum(
-                Q[s_][i] * greedy_action_probability
-                if Q[s_][i] == q_max
-                else Q[s_][i] * non_greedy_action_probability
-                for i in range(env.nA)
+                Q.get(s_, i) * greedy_action_probability
+                if Q.get(s_, i) == q_max
+                else Q.get(s_, i) * non_greedy_action_probability
+                for i in range(env.action_space.n)
             )
-            Q[s, a] = Q[s, a] + alpha * (
-                r + discount_factor * expected_q - Q[s, a]
+            update = Q.get(s, a) + alpha * (
+                r + discount_factor * expected_q - Q.get(s, a)
             )
+            Q.set(s, a, update)
             s = s_
             a = a_
             R += r
@@ -135,7 +139,7 @@ def expected_sarsa(
     return Q, (episode_lengths, episode_returns, episode_times), diffs
 
 
-# NAME2ALG = {"expected_sarsa": expected_sarsa, "sarsa": sarsa}
+NAME2ALG = {"expected_sarsa": expected_sarsa, "sarsa": sarsa}
 
 
 # from windy_gridworld import WindyGridworldEnv
