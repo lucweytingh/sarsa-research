@@ -44,23 +44,12 @@ def get_alg2metadata(env_name, nof_alphas, seeds):
     return alg2metadata
 
 
-def get_alg2alpha(env_name, seeds):
-    "returns an alg2alpha for the provided environment name"
-    alg2alpha = dict()
-
-    for alg_name, alg in NAME2ALG.items():
-        print(alg_name)
-        alg2alpha[alg_name] = perform_grid_search(
-            alg, env, nof_alphas=3, random_seeds=seeds
-        )
-    return alg2alpha
-
-
 def run(env_name, nof_alphas=10, seeds=[42, 420, 4200]):
     expresults = ExperimentResults.from_storage()
     if expresults.results_present(env_name, nof_alphas, seeds):
         answer = input(
-            "Results for this environment and these parameters have already been computed, continue? (y/n) "
+            "Results for this environment and these parameters have already\
+ been computed, continue? (y/n) "
         )
         if not answer.startswith("y"):
             expresults.show_results(env_name)
