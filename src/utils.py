@@ -1,14 +1,14 @@
+import json
+from collections import defaultdict
+from pathlib import Path
+
 import numpy as np
 import gym
-from collections import defaultdict
+
+from src.constants import ENV_NAMES
 
 
-def init_Q(env):
-    "initialize empty Q table given the environment"
-    return dictQ(env)
-
-
-class dictQn:
+class dictQ:
     def __init__(self, env):
         self.state2action2Q = defaultdict(dict)
         self.env = env
@@ -26,6 +26,11 @@ class dictQn:
 
     def set(self, state, action, value):
         self.state2action2Q[state][action] = value
+
+
+def init_Q(env):
+    "initialize empty Q table given the environment"
+    return dictQ(env)
 
 
 class matrixQ:
@@ -71,7 +76,8 @@ class EpsilonGreedyPolicy(object):
 
 
 def get_samples_used(episode_lenghts):
-    "given the outputted episode_lengths list, returns the number of samples used"
+    """given the outputted episode_lengths list, returns the number of samples
+    used"""
     return sum(episode_lenghts)
 
 
@@ -84,3 +90,20 @@ def get_nof_actions(env):
 def running_mean(vals, n=1):
     cumvals = np.array(vals).cumsum()
     return (cumvals[n:] - cumvals[:-n]) / n
+
+
+def load(fpath):
+    if str(fpath).endswith(".json"):
+        with open(fpath, "r") as f:
+            out = json.loads(f.read())
+    return out
+
+
+def write(fpath, to_write):
+    if str(fpath).endswith(".json"):
+        with open(fpath, "w") as f:
+            f.write(json.dumps(to_write))
+
+
+def get_env(env_name):
+    gym.env

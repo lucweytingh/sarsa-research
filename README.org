@@ -16,3 +16,10 @@ Then, in this environment, install =src= as an editable package by running:
 conda activate sarsa_research
 pip install -e .
 #+END_SRC
+
+** .env
+Add a =.env= in the root of the project directory and set the following
+parameters:
+#+BEGIN_SRC sh
+PROJECT_DIR=/path/to/this/project/
+#+END_SRC
