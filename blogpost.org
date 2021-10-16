@@ -14,8 +14,49 @@
 #+OPTIONS: ^:nil
 #+LATEX_COMPILER: pdflatex
 
-
 * Introduction
+
+Humans -- and animals -- do a great deal of learning throughout their
+life. When we move to a new city, where we have never been before, we find
+ourselves in an unknown environment. In order to be able to do the things we
+want to, we need to learn things about the environment; for instance, /"Where
+is the supermarket?"/ The best way to learn such things is to interact with the
+environment, experience what happens as you do so, and learn as much as you can
+from those experiences! To find a supermarket in that new city, the easiest
+thing is to walk through the streets, and when you find one, remember its
+location.[fn:: Well, before the internet, at least...] And the more often we
+repeat these experiences, the better we learn their outcomes! If we flip a coin
+and it lands on heads everytime, the more times it lands heads, the more
+certain we become that something is funky with the coin. In other words, the
+more often we experience a certain outcome of some action or event, the
+stronger our beliefs about that outcome become. The repetition of those
+experiences *reinforce* our beliefs about the world. The learning through
+repetition of experiences is what we call *Reinforcement Learning* (RL), and we
+do it all the time.
+
+Nowadays, it's not just humans and animals who apply Reinforcement Learning,
+but computers can do it as well. This can be very useful: for instance, if we
+want some (computer-controlled) robots to do a dangerous (or boring!) activity
+so that we don't have to, those robots should know how to perform that
+activity. We could try to pre-program the computers so that we tell them what
+to do in every possible scenario, but this is very tricky, especially if the
+environment in which they act is dynamic and unpredictable. Instead, what if we
+would program the computer to learn through reinforcement, and then send a
+couple pioneer robots out into the environment to collect experiences? That
+way, we are sure that, eventually, they can learn from every situation they
+encounter (at the cost, perhaps, of a couple robots). Computers could learn how
+to assemble cars, how to mine for precious metals, how to play (video)games,
+and so on! <<some more examples?>>
+
+
+<<maybe we can put this in a nice special info box>>
+By the way, as humans, we also learn in another way, which we are really good
+at: we learn from others. For computers, this is not impossible to accomplish,
+but we always need RL for computers keep learning from their experiences. So,
+we better get good at it!
+
+* Introduction OLD :noexport:
+
 Methods based on Temporal Difference (TD) learning form a central and novel
 role within Reinforcement Learning (RL). A big advantage of TD methods over
 earlier approaches is that they work in an online setting with no previous
