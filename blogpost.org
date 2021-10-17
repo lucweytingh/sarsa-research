@@ -48,6 +48,54 @@ encounter (at the cost, perhaps, of a couple robots). Computers could learn how
 to assemble cars, how to mine for precious metals, how to play (video)games,
 and so on! <<some more examples?>>
 
+Computers can not experience the world in as much detail and nuance as we
+humans do <<TODO: WHY?>>, and so, they need some simplified version of the
+world to work with. In RL, researchers use three concepts to achieve this
+simplification: states, actions, and rewards.
+
+A state (denoted with $S$) is simply a complete description of (the relevant
+parts of) the world in which the computer needs to act. If the computer
+controls a robot which can walk around, the state might consist of the current
+position of the robot, for instance. If the computer is learning to play a
+videogame, the state is often just: the current screen. If the computer
+controls an airplane, the state would include all kinds of stuff like: the
+weight of the plane, the position in space, whether there's clouds around,
+whether the wheels are down or not -- basically, all the things of which we,
+the programmer of the computer, think can be relevant when making decisions
+(without any superfluous information).
+
+An action (denoted with $A$) is simply an action that a computer can take from
+any state. If the computer is controlling that robot which can walk around,
+then its actions might be to move forward, or to the left, or to the right, or
+backwards (or to stand still).
+
+A reward (denoted with $R$) is any number, either negative or positive, which
+is rewarded after an action $A$ is taken from a specific state $S$. If we want
+the computer to find the treasure in a maze, then the action taken which
+directly exposes the treasure might have a very large reward. For instance,
+turning left ($A$) at a certain point in the maze ($S$) might have a reward
+$R(S, A) = 100$. When the computer is playing a videogame in which the
+challenge is to survive as long as possible, then every action taken through
+which the player does not die would have a positive reward.
+
+In this blog post we will only discuss /episodic tasks/, which are tasks which
+have some kind of end. If the task is to escape a maze, then one episode would
+start at the moment in which the computer is 'dropped' into the maze, and would
+end when the exit has been reached. To reach the end of an episode, the
+computer has to decide to take a sequence of actions. These actions each have a
+reward, and so you can /score/ the overall episode, simply by summing the
+reward. When the goal is for the computer to escape as quickly as possible,
+every action in which it has not escaped yet might have a small negative
+reward. Then, episodes at which the computer takes more actions (time) to
+escape the maze have a lower score.
+
+In the study of Artificial Intelligence (AI), many efforts have been made to
+try and make it possible for RL to be performed by computers, and the field of
+RL has a long history. In (almost all of) this research, the problem boils down
+to finding some algorithm which can perform the following task: based on a
+bunch of experiences, what is the best way for a computer to learn the optimal
+strategy? Here, the higher the average score a computer gets when applying the
+strategy in the world, the better we say that strategy is.
 
 <<maybe we can put this in a nice special info box>>
 By the way, as humans, we also learn in another way, which we are really good
