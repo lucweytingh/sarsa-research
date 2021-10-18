@@ -18,7 +18,9 @@ def run(env_name):
     alg2results = {}
     for name, alg in NAME2ALG.items():
         alpha = exp2results[env_name][name]["opt_alpha"]
-        alg2results[name] = get_results(alg, env, n_runs=3, n_episodes=1000)
+        alg2results[name] = get_results(
+            alg, env, alpha, n_runs=3, n_episodes=1000
+        )
     plt.close("all")
     plot_results(
         alg2results,
@@ -26,8 +28,8 @@ def run(env_name):
     )
 
 
-def get_results(sarsa_fn, env, n_runs=3, n_episodes=1000):
-    seeds = range(2, 10)
+def get_results(sarsa_fn, env, alpha, n_runs=3, n_episodes=1000):
+    seeds = range(n_runs)
     returns = np.zeros((n_episodes, n_runs))
     lengths = np.zeros((n_episodes, n_runs))
     times = np.zeros((n_episodes, n_runs))
@@ -41,7 +43,7 @@ def get_results(sarsa_fn, env, n_runs=3, n_episodes=1000):
             _,
             (episode_lengths, episode_returns, episode_times),
             _,
-        ) = sarsa_fn(env, n_episodes)
+        ) = sarsa_fn(env, n_episodes, alpha=alpha)
         returns[:, r] = episode_returns
         lengths[:, r] = episode_lengths
         times[:, r] = episode_times
