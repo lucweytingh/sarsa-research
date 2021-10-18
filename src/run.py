@@ -22,10 +22,7 @@ def run(env_name):
             alg, env, alpha, n_runs=3, n_episodes=1000
         )
     plt.close("all")
-    plot_results(
-        alg2results,
-        env_name,
-    )
+    plot_results(alg2results, env_name, fname=env_name)
 
 
 def get_results(sarsa_fn, env, alpha, n_runs=3, n_episodes=1000):

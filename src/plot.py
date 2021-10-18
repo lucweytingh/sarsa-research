@@ -165,7 +165,8 @@ def plot_results(
     if fname is None:
         plt.show()
     else:
-        plt.savefig(fname, bbox_inches="tight_layout")
+        # plt.savefig(fname, bbox_inches="tight_layout")
+        plt.savefig(fname)
 
 
 # from src.envs.windy_gridworld import WindyGridworldEnv
