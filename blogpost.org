@@ -226,5 +226,7 @@ How can we ensure that we are making a fair comparison?
 
 
 * Results
-
+#+CAPTION: Mean episode return SARSA and Expected SAESA for the CliffWalking-v0 env
+#+NAME:   fig:cliffwalk
+[[./src/CliffWalking-v0.png]]
 * Conclusion
