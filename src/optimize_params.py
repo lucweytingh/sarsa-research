@@ -8,9 +8,10 @@ from src.experimentresults import ExperimentResults
 from src.sarsa import NAME2ALG
 
 
-def perform_grid_search(sarsa_alg, env, nof_alphas=20, random_seeds=[42, 420]):
+def perform_grid_search(sarsa_alg, env, nof_alphas=30, random_seeds=[42, 420]):
     """for given sarsa algorithm, environment and parameters return the optimal
     alpha learning rate"""
+    print(f"Finding Optimal Alpha for {sarsa_alg}")
     alpha2performance = {}
     for alpha in np.linspace(0.1, 1, nof_alphas):
         perfs = []
