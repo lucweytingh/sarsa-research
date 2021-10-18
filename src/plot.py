@@ -11,7 +11,7 @@ def join_with_final_and(ary):
     return ", and ".join([all_but_last, last])
 
 
-ALG2COLOR = {"sarsa": "dodgerblue", "expected sarsa": "darkorange"}
+ALG2COLOR = {"sarsa": "dodgerblue", "expected_sarsa": "darkorange"}
 
 
 def legend_item(alg_name):
