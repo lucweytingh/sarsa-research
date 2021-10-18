@@ -35,7 +35,7 @@ def sarsa(
     stats = []
     diffs = []
     R = 0
-    for i_episode in _tqdm(range(num_episodes)):
+    for i_episode in range(num_episodes):
         start_time = time.time()
         policy.Q = Q
         state = env.reset()
@@ -102,7 +102,7 @@ def expected_sarsa(
     diffs = []
     R = 0
     nA = get_nof_actions(env)
-    for i_episode in _tqdm(range(num_episodes)):
+    for i_episode in range(num_episodes):
         s = env.reset()
         i = 0
         old_R = R
