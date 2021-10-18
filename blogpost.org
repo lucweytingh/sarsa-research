@@ -1,8 +1,8 @@
 #+BIND: org-export-use-babel nil
 #+TITLE: A comparison between regular and Expected SARSA
-#+AUTHOR: Luc Weytingh
-#+EMAIL: <lucweytingh321@gmail.com>
-#+DATE: October 11, 2021
+#+AUTHOR: Luc Weytingh, Paul Lodder, Pim Meerdink, Jeroen Jagt
+#+EMAIL: University of Amsterdam, University of Amsterdam, University of Amsterdam, University of Amsterdam
+#+DATE: \today
 #+LATEX: \setlength\parindent{0pt}
 #+LaTeX_HEADER: \usepackage{minted}
 #+LATEX_HEADER: \usepackage[margin=0.8in]{geometry}
@@ -15,6 +15,55 @@
 #+LATEX_COMPILER: pdflatex
 
 * Introduction
+
+Humans -- and animals -- do a great deal of learning throughout their life. We
+learn things about the environment we're in by our experiences we have in it,
+and their outcomes. Nowadays, many researchers in A.I. work on methods through
+which computers can learn from experiences in an environment to construct a
+strategy, often called a policy, on how best to act in that environment. This
+field of research is called Reinforcement Learning (RL).
+
+In RL, a computer is programmed to act in the following way: from some state
+$S$ (its current position in the world), it selects an action $A$ (something it
+can /do/ from that position), which results in a reward $R$, and ending up in a
+next state $S'$. It would then pick a new action $A'$, get another reward $R'$,
+and end up in another state, all the way until the end goal is reached[fn:: In
+this blogpost, we only consider episodic tasks, which are tasks which always
+have an ending.]. Based on the current state $S$, the computer decides which
+action $A$ to pick according to a policy function $\pi(S) = A$. When learning
+from experiences, the goal is to find some policy $\pi$ through which, if the
+computer were to use that, the sum of rewards is maximized ($R + R' + R'' +
+\dots$). When we are getting experiences, we need to use some policy as
+well. This can either be the very same policy we are improving with those
+experiences (on-policy), or any different strategy/policy we would like to use
+(off-policy).
+
+In this blog post, we want to highlight the differences between one popular RL
+technique called SARSA, which is on-policy, and a variant on it called Expected
+SARSA (ESARSA), which is off-policy. The idea behind SARSA is that, for every
+state $S$ and some action $A$ that can be taken from it, we find some value to
+the pair $(S, A)$ which reflects how rewarding it is to take that action. The
+policy then simply is defined as taking the action associated with the largest
+value [TODO: VERIFY THIS?]. We use the policy itself to get more experiences,
+and with every new experience, we update the value of $(S, A)$ based on its
+reward $R$ and /the value of the *best* action $A'$ we can take in the state
+$S'$/ (in which we've ended up after taking $A$). ESARSA is similar, but
+instead of taking the value of the best action, we take the average of the
+values of all actions we could take from that next state $S'$. In doing so,
+according to the theory, ESARSA should take a little bit more (computational)
+effort in every learning experience than SARSA does, but it should then require
+fewer experiences to learn a policy which performs as well as the policy SARSA
+would produce with more experiences.
+
+We want to investigate whether those theoretical claims actually hold in
+practice. To do so, we apply SARSA and ESARSA on the same tasks, give them the
+same number of episodes to learn a policy, and measure how long the whole
+process takes, as well as the performance of the policy as it is being
+learnt. We expect to see a confirmation of the theory, namely that ESARSA is a
+bit slower than SARSA, but does produce a better-performing policy early on in
+the learning process than SARSA does.
+
+* Introduction TOO FUCKING LONG                                    :noexport:
 
 Humans -- and animals -- do a great deal of learning throughout their
 life. When we move to a new city, where we have never been before, we find
@@ -140,8 +189,19 @@ open source gym library [TODO: reference], reporting on the differences in
 # HYPOTHESE
 
 ** Hypothesis
+
 * Method
-** Hyperparameters
+
+Which environments/tasks will we use?
+- discrete tasks from the GYM collection
+
+How can we ensure that we are making a fair comparison?
+- what are hyperparameters
+- hyperparameter optimization
+
+- random runs over different seeds using optimal parameters.
+
+
 
 * Results
 
