@@ -192,6 +192,28 @@ open source gym library [TODO: reference], reporting on the differences in
 
 * Method
 
+To test the theoretical claims, we need tasks to compare the results of SARSA
+and ESARSA. Luckily for us, we don't have to construct these tasks
+ourselves. Gym is an open-source toolkit for training and developing RL
+algorithms, it contains tasks that range from learning agents to walk, to
+playing games like pong or pinball. In addition, it provides methods for
+interacting with an environment that are identical for all tasks, making it
+easier for us to run experiments on a range of tasks using the same code.
+
+Since we are comparing two approaches that are both designed to have a finite
+amount of states, we want the state space to be non-continuous. We often refer
+to tasks with these kind of state-spaces as /tabular/ tasks. For our
+experiments, we selected 13 tabular tasks from the gym library: Copy-v0,
+RepeatCopy-v0, ReversedAddition-v0, ReversedAddition3-v0, DuplicatedInput-v0,
+Reverse-v0, Blackjack-v0, FrozenLake-v0, FrozenLake8x8-v0, CliffWalking-v0,
+NChain-v0, Roulette-v0 and Taxi-v2. Although these tasks differ in their goals,
+what's important to remember that all these tasks have a finite amount of
+states, a finite amount of actions, and they all return a reward when a new
+state is reached.
+
+One more thing. How can we assure that we are making a fair comparison between
+our two techniques?
+
 Which environments/tasks will we use?
 - discrete tasks from the GYM collection
 
