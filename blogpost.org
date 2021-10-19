@@ -5,6 +5,7 @@
 #+DATE: \today
 #+LATEX: \setlength\parindent{0pt}
 #+LaTeX_HEADER: \usepackage{minted}
+#+LaTeX_HEADER: \usepackage{mathpazo}
 #+LATEX_HEADER: \usepackage[margin=0.8in]{geometry}
 #+LATEX_HEADER_EXTRA:  \usepackage{mdframed}
 #+LATEX_HEADER_EXTRA: \BeforeBeginEnvironment{minted}{\begin{mdframed}}
@@ -25,7 +26,7 @@ field of research is called Reinforcement Learning (RL).
 
 In RL, an algorithm acts in the following way: from some state $S$ (its current
 position in the world), it selects an action $A$ (something it can /do/ from
-that position), which results in a reward $R$, and ending up in a next state
+that position), which results in a reward $R$, and in ending up in a next state
 $S'$. It would then pick a new action $A'$, get another reward $R'$, and end up
 in another state, all the way until the end goal is reached[fn:: In this
 blogpost, we only consider episodic tasks, which are tasks which always have an
@@ -33,12 +34,16 @@ ending.]. Based on the current state $S$, the algorithm decides which action
 $A$ to pick according to a policy function $\pi(S) = A$. When learning from
 experiences, the goal is to find some policy $\pi$ through which, if the
 algorithm were to use that, the total reward is maximized ($R + R' + R'' +
-\dots$).
+\dots$). The policy can be anything, but one popular class of approaches is
+based on an /action-value/ function (or /Q-function/), which represents how
+/valuable/ or /rewarding/ it is to take an action from some state. The policy
+function could then just be defined to pick the most valuable actions.
 
-In this blogpost, we highlight the difference between /Sarsa/ and /Expected
-Sarsa/, two algorithms for finding an optimal policy.
+In this blogpost, we highlight the difference between /SARSA/ and /Expected
+SARSA/ (ESARSA), two algorithms for finding an optimal policy. <<jpj: we need
+some additional text here.>>
 
-#paul: i would leave this out, on-policy vs off-policy
+# paul: i would leave this out, on-policy vs off-policy
 # When we are getting experiences, we need to use some policy as well. This can
 # either be the very same policy we are improving with those experiences
 # (on-policy), or any different strategy/policy we would like to use
@@ -47,54 +52,74 @@ Sarsa/, two algorithms for finding an optimal policy.
 # it called Expected SARSA (ESARSA), which is off-policy.
 
 
-#paul: Perhaps we need to introduce the concept of Q functions and policies here
-* Theory
-Both algorithms find the best policy by learning an optimal /action-value/
-function, or /Q-function/. A Q-function aims to answer the following question
-for each state $S$ and possible action $A$: how much reward will the agent
-receive if it takes action $A$ from state $S$?
+# paul: Perhaps we need to introduce the concept of Q-functions and policies
+# here
 
-Both in SARSA and ESARSA, we let an agent interact with our environment to
-generate experience. Using this experience, we update our Q function, and the
-agent bases its policy on the most updated Q function. Hence, as the Q function
-improves, so does the behaviour of our agent.
+** SARSA or ESARSA: what's the difference?
 
-However, by letting our agent base its behaviour on the very Q function we are
-trying to optimize, we may get a form of "tunnel vision", where the agent will
-only keep performing actions it already thinks are good. A potential result of
-this is that certain state-action pairs are never visited. A common approach to
-tackle this is by letting the agent have an /\epsilon-greedy policy/ w.r.t. the Q
-function: 1-\epsilon of the time, the agent behaves according to what it thinks is
-best, in the remaining \epsilon of the time it picks a random action. By doing this,
-we make sure the agent maintains some exploratory behaviour, while still mainly
-adhering to what our algorithm currently thinks is optimal behaviour. [perhaps
-visualize this policy].
+# Both algorithms find the best policy by learning an optimal /action-value/
+# function, or /Q-function/. A Q-function aims to answer the following question
+# for each state $S$ and possible action $A$: how much reward will the agent
+# receive if it takes action $A$ from state $S$?
+
+Of course, before training, we do not know the Q-function, i.e. how valuable
+each action is[fn:: If we would know this, we would not need to learn
+anything.]. Both in SARSA and ESARSA, we let an agent interact with our
+environment to generate experience. Using this experience, we update the
+Q-function, and since the agent's policy is based on the Q-function, so does
+the policy (and behaviour) of the agent.
+
+However, by letting our agent base its behaviour on the very Q-function we are
+trying to optimize, we may get a form of ``tunnel vision'', where the agent
+will only choose to perform actions it already thinks are good. A potential
+result of this is that certain actions might never be picked, even if in
+reality -- unbeknownst to us -- that action would be more rewarding! A common
+way to tackle this problem is to use a policy through which the agent behaves
+according to what it thinks most of the time, but /sometimes/, picks a random
+action. Formally, this is known as an /\epsilon-greedy policy/, where $\epsilon
+\in [0, 1]$ indicates how often a random action is chosen. This ensures that
+the agent will still explore from time to time, but not too often (because then
+we'd lose out on rewards).
+
+# A common approach to tackle this is by letting the agent have an
+# /\epsilon-greedy policy/ w.r.t. the Q-function: 1-\epsilon of the time, the
+# agent behaves according to what it thinks is best, in the remaining \epsilon
+# of the time it picks a random action. In doing so, we make sure the agent
+# maintains some exploratory behaviour, while still mainly adhering to what our
+# algorithm currently thinks is optimal behaviour. [perhaps visualize this
+# policy].
 
 Hence, both SARSA and ESARSA learn from an agent that is largely acting
 according to their current version of the Q-function. The crucial difference
-that distinguishes SARSA from ESARSA, is the way in which we update our Q
-function. In SARSA, our update rule is:
-# #+begin_export latex
+which distinguishes SARSA from ESARSA is in the rule through which our
+Q-function is updated (based on an experience). In SARSA, the update rule is:
+#+begin_export latex
 \begin{equation}
      Q(S_{t}, A_{t}) = Q(S_{t}, A_{t}) + \alpha (R_{t+1}+\gamma Q(S_{t+1}, A_{t+1})-Q(S_{t}, A_{t}))
 \end{equation}
-# #+end_export
+
 whereas in ESARSA, it is:
-# #+begin_export latex
+
 \begin{equation}
 Q(s_{t}, a_{t}) = Q(s_{t}, a_{t}) + \alpha (r_{t+1}+\gamma \sum_{a} \pi (a | s_{t+1}) Q(s_{t+1}, a)-Q(s_{t}, a_{t}))
 \end{equation}
-#+end_export\\
-The important difference here is that SARSA's update rules uses the actual
+#+end_export
+
+The important difference here is that SARSA's update rule uses the actual
 trajectory, i.e. the actual action the agent picked at the next state (which
 may have been a random, terrible action). In contrast, ESARSA uses the expected
 reward according to the current policy, i.e. weighting the rewards for each of
 the possible next actions by the probability of taking that action.
 
-As you can already see from the complexity of the update equations, ESARSA
-requires more computation per update step than SARSA. On the flipside, however,
-ESARSA is expected to require fewer update steps.
+There are a number of theoretical differences between SARSA and ESARSA. First,
+as you might already have spotted from the complexity of the update equations,
+ESARSA requires more computations per update step than SARSA, and so, has a
+higher *computational complexity*. On the flipside, however, ESARSA is expected
+to reach better performance in fewer update steps than SARSA, because the
+update step is supposed to extract more information from one experience, and
+so, has a higher *sample efficiency* than SARSA.
 
+<<TODO: introduce the idea of "sample" (= "one experience")?>>
 
 #   assigns a numerical value to each state $S$ and
 # action $A$ that can be taken from it, we find some value for the pair $(S, A)$
@@ -113,39 +138,45 @@ ESARSA is expected to require fewer update steps.
 # it should then require fewer experiences to learn a policy which performs as
 # well as the policy SARSA would produce with more experiences.
 
+** The experiment
 
-* Hypothesis
-TODO: not really happy with the placement of this part but i think it
+Of course, if we actually would have to make a choice between SARSA and ESARSA,
+we would care more about practical results than theoretical ones. So, the
+question is: do the theoretical claims about computational complexity and
+sample efficiency actually hold in practice?
 
-We want to investigate whether the theoretical claims about computational
-complexity and sample efficiency actually hold in practice. To do so, we apply
+In order to investigate this question, let's run an experiment! We'll apply
 SARSA and ESARSA on the same tasks, give them the same number of episodes to
 learn a policy, and measure how long the whole process takes, as well as the
-performance of the policy as it is being learnt. We measure how long the
-learning process takes in two ways. First, we simply record the actual time
-taken in seconds. Second, we also record the amount of update steps taken (how
-many samples the algorithm has observed). We will plot both against the return
-(how much reward the algorithm receives). In these plots we expect to observe
-that ESARSA learns faster when we observe the amount of samples it needs
-(ESARSA draws more reliable information from each sample due to the expectation
-it computes). However, we expect the opposite to be true (i.e. SARSA will be
-faster than ESARSA) when we observe the return as a function of the time
-elapsed, as the ESARSA update is more expensive it will need more computational
-time to process each sample.
+performance of the policy as it is being learned.
+
+We need to measure how long the learning process takes in two ways. For the
+computational complexity, we should record the actual time taken in
+seconds. For the sample efficiency, we also record the amount of update steps
+taken (how many samples the algorithm has observed). We will plot both against
+the return (how much reward the algorithm receives).
+
+# ESARSA draws more reliable information from each sample due to the
+# expectation it computes
+Of course, since the theory /should/ be correct (in theory), our hypothesis is
+that the practical experiments support the theoretical claims. In the plots, we
+expect to observe that ESARSA learns faster when we observe the amount of
+samples it needs, and thus, has a higher sample efficiency. Likewise, we expect
+SARSA to learn faster than ESARSA when we observe the return as a function of
+the time elapsed, because the latter has a higher computaional complexity (and
+so, takes longer for every sample).
 
 * Method
 
 ** Environments
 
-
-
-To test the theoretical claims, we need tasks to compare the results of SARSA
-and ESARSA. Luckily for us, we don't have to construct these tasks
-ourselves. Gym is an open-source toolkit for training and developing RL
-algorithms, it contains tasks that range from learning agents to walk, to
-playing games like pong or pinball. In addition, it provides methods for
-interacting with an environment that are identical for all tasks, making it
-easier for us to run experiments on a range of tasks using the same code.
+In our experiment, we need some tasks to test on! Luckily for us, we don't have
+to construct these tasks ourselves. Gym is an open-source toolkit for training
+and developing RL algorithms, and contains tasks that range from learning
+agents to walk, to playing games like pong or pinball. In addition, it provides
+methods for interacting with an environment that are identical for all tasks,
+making it easier for us to run experiments on a range of tasks using the same
+code.
 
 Since we are comparing two approaches that are both designed to have a finite
 amount of states, we want the state space to be non-continuous. We often refer
@@ -162,6 +193,7 @@ TODO:: write about why we choose these
 
 
 ** Seeds
+
 Many of the environments that we run our algorithms on are stochastic (that is
 to say: they involve some randomness). This means that we can expect slightly
 different results every time we interact with the environment, even if our
@@ -173,7 +205,8 @@ make sure to execute multiple runs with different seeds whenever we train a
 algorithm in an environment.
 
 
-** Hypeparameters
+** Hyperparameters
+
 As with most AI techniques, an important design choice we need to think about
 is choosing the right hyperparameters. First, we will look at $\alpha$,
 representing the learning rate in the SARSA and ESARSA equations. It may seem
