@@ -46,7 +46,7 @@ def get_results(sarsa_fn, env, alpha, n_runs=3, n_episodes=1000):
         times[:, r] = episode_times
     return {
         "episode_returns": returns,
-        "xvar2results": {"episode lengths": lengths, "time": times},
+        "xvar2results": {"nof updates": lengths, "time": times},
     }
 
 
