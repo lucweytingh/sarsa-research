@@ -19,61 +19,103 @@
 Humans -- and animals -- do a great deal of learning throughout their life. We
 learn things about the environment we're in by our experiences we have in it,
 and their outcomes. Nowadays, many researchers in A.I. work on methods through
-which computers can learn from experiences in an environment to construct a
+which algorithms can learn from experiences in an environment to construct a
 strategy, often called a policy, on how best to act in that environment. This
 field of research is called Reinforcement Learning (RL).
 
-In RL, a computer is programmed to act in the following way: from some state
-$S$ (its current position in the world), it selects an action $A$ (something it
-can /do/ from that position), which results in a reward $R$, and ending up in a
-next state $S'$. It would then pick a new action $A'$, get another reward $R'$,
-and end up in another state, all the way until the end goal is reached[fn:: In
-this blogpost, we only consider episodic tasks, which are tasks which always
-have an ending.]. Based on the current state $S$, the computer decides which
-action $A$ to pick according to a policy function $\pi(S) = A$. When learning
-from experiences, the goal is to find some policy $\pi$ through which, if the
-computer were to use that, the sum of rewards is maximized ($R + R' + R'' +
-\dots$). When we are getting experiences, we need to use some policy as
-well. This can either be the very same policy we are improving with those
-experiences (on-policy), or any different strategy/policy we would like to use
-(off-policy).
+In RL, an algorithm acts in the following way: from some state $S$ (its current
+position in the world), it selects an action $A$ (something it can /do/ from
+that position), which results in a reward $R$, and ending up in a next state
+$S'$. It would then pick a new action $A'$, get another reward $R'$, and end up
+in another state, all the way until the end goal is reached[fn:: In this
+blogpost, we only consider episodic tasks, which are tasks which always have an
+ending.]. Based on the current state $S$, the algorithm decides which action
+$A$ to pick according to a policy function $\pi(S) = A$. When learning from
+experiences, the goal is to find some policy $\pi$ through which, if the
+algorithm were to use that, the total reward is maximized ($R + R' + R'' +
+\dots$).
 
-In this blog post, we want to highlight the differences between one popular RL
-technique called SARSA, which is on-policy, and a variant on it called Expected
-SARSA (ESARSA), which is off-policy.
+In this blogpost, we highlight the difference between /Sarsa/ and /Expected
+Sarsa/, two algorithms for finding an optimal policy.
 
+#paul: i would leave this out, on-policy vs off-policy
+# When we are getting experiences, we need to use some policy as well. This can
+# either be the very same policy we are improving with those experiences
+# (on-policy), or any different strategy/policy we would like to use
+# (off-policy). In this blog post, we want to highlight the differences between
+# one popular RL technique called SARSA, which is on-policy, and a variant on
+# it called Expected SARSA (ESARSA), which is off-policy.
+
+
+#paul: Perhaps we need to introduce the concept of Q functions and policies here
 * Theory
-The idea behind SARSA is that, for every state $S$ and some action $A$ that
-can be taken from it, we find some value to the pair $(S, A)$ which reflects
-how rewarding it is to take that action. The policy then simply is defined as
-taking the action associated with the largest value [TODO: VERIFY THIS?]. We
-use the policy itself to get more experiences, and with every new experience,
-we update the value of $(S, A)$ based on its reward $R$ and /the value of the
-*best* action $A'$ we can take in the state $S'$/ (in which we've ended up
-after taking $A$).
+Both algorithms find the best policy by learning an optimal /action-value/
+function, or /Q-function/. A Q-function aims to answer the following question
+for each state $S$ and possible action $A$: how much reward will the agent
+receive if it takes action $A$ from state $S$?
 
-#+begin_export latex
+Both in SARSA and ESARSA, we let an agent interact with our environment to
+generate experience. Using this experience, we update our Q function, and the
+agent bases its policy on the most updated Q function. Hence, as the Q function
+improves, so does the behaviour of our agent.
+
+However, by letting our agent base its behaviour on the very Q function we are
+trying to optimize, we may get a form of "tunnel vision", where the agent will
+only keep performing actions it already thinks are good. A potential result of
+this is that certain state-action pairs are never visited. A common approach to
+tackle this is by letting the agent have an /\epsilon-greedy policy/ w.r.t. the Q
+function: 1-\epsilon of the time, the agent behaves according to what it thinks is
+best, in the remaining \epsilon of the time it picks a random action. By doing this,
+we make sure the agent maintains some exploratory behaviour, while still mainly
+adhering to what our algorithm currently thinks is optimal behaviour. [perhaps
+visualize this policy].
+
+Hence, both SARSA and ESARSA learn from an agent that is largely acting
+according to their current version of the Q-function. The crucial difference
+that distinguishes SARSA from ESARSA, is the way in which we update our Q
+function. In SARSA, our update rule is:
+# #+begin_export latex
 \begin{equation}
      Q(S_{t}, A_{t}) = Q(S_{t}, A_{t}) + \alpha (R_{t+1}+\gamma Q(S_{t+1}, A_{t+1})-Q(S_{t}, A_{t}))
 \end{equation}
-#+end_export
-
-ESARSA is similar, but instead of taking the value of the best action, we take
-the average of the values of all actions we could take from that next state
-$S'$. In doing so, according to the theory, ESARSA should take a little bit
-more (computational) effort in every learning experience than SARSA does, but
-it should then require fewer experiences to learn a policy which performs as
-well as the policy SARSA would produce with more experiences.
-
-#+begin_export latex
+# #+end_export
+whereas in ESARSA, it is:
+# #+begin_export latex
 \begin{equation}
 Q(s_{t}, a_{t}) = Q(s_{t}, a_{t}) + \alpha (r_{t+1}+\gamma \sum_{a} \pi (a | s_{t+1}) Q(s_{t+1}, a)-Q(s_{t}, a_{t}))
 \end{equation}
-#+end_export
+#+end_export\\
+The important difference here is that SARSA's update rules uses the actual
+trajectory, i.e. the actual action the agent picked at the next state (which
+may have been a random, terrible action). In contrast, ESARSA uses the expected
+reward according to the current policy, i.e. weighting the rewards for each of
+the possible next actions by the probability of taking that action.
+
+As you can already see from the complexity of the update equations, ESARSA
+requires more computation per update step than SARSA. On the flipside, however,
+ESARSA is expected to require fewer update steps.
+
+
+#   assigns a numerical value to each state $S$ and
+# action $A$ that can be taken from it, we find some value for the pair $(S, A)$
+# which reflects how rewarding it is to take that action. We can then derive a
+# policy based on the resulting action-value function by e.g. (almost) always
+# picking the action with the largest associated value. We use this policy to get
+# more experiences, and with every new experience, we update the value of $(S,
+# A)$ based on its reward $R$ and /the value of the *best* action $A'$ we can
+# take in the state $S'$/ (in which we've ended up after taking $A$).
+
+
+# ESARSA is similar, but instead of taking the value of the best action, we take
+# the average of the values of all actions we could take from that next state
+# $S'$. In doing so, according to the theory, ESARSA should take a little bit
+# more (computational) effort in every learning experience than SARSA does, but
+# it should then require fewer experiences to learn a policy which performs as
+# well as the policy SARSA would produce with more experiences.
+
 
 * Hypothesis
 TODO: not really happy with the placement of this part but i think it
-
 
 We want to investigate whether the theoretical claims about computational
 complexity and sample efficiency actually hold in practice. To do so, we apply
