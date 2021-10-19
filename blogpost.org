@@ -230,3 +230,8 @@ How can we ensure that we are making a fair comparison?
 #+NAME:   fig:cliffwalk
 [[./src/CliffWalking-v0.png]]
 * Conclusion
+
+
+- meer uitleg graphs
+- hyperaparms
+- why choos env
