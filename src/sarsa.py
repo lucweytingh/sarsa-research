@@ -1,7 +1,67 @@
 import time
 from tqdm import tqdm as _tqdm
 
-from src.utils import init_Q, EpsilonGreedyPolicy, get_nof_actions
+from src.utils import init_Q, EpsilonGreedyPolicy, get_actions
+
+
+def train_sarsa(
+    env,
+    num_episodes,
+    Q,
+    policy,
+    get_Q_for_next_sa,
+    discount_factor=1.0,
+    alpha=0.5,
+):
+    """Shared training logic for SARSA or Expected SARSA.
+
+    SARSA and Expected SARSA only differ in the way that the Q-value based on
+    the next state is computed. Hence, this logic is represented by the
+    get_Q_for_next_sa function, which is passed by SARSA or Expected SARSA.
+    """
+
+    # keep track of useful statistics over training
+    stats = []
+    diffs = []
+
+    for i_episode in range(num_episodes):
+        state = env.reset()
+        start_time = time.time()
+        # the current timestep
+        t = 0
+        # keep track of the discounted sum of rewards
+        R = 0
+        # we need an initial action
+        action = policy.sample_action(state)
+        while True:
+            # perform step in the environment
+            (new_state, reward, done, _) = env.step(action)
+            # compute a new action
+            new_action = policy.sample_action(new_state)
+            R += reward * (discount_factor ** t)
+            Q_sa = Q.get(state, action)
+
+            # compute new Q[s, a] value
+            updated_Q_sa = Q_sa + alpha * (
+                reward
+                + discount_factor * get_Q_for_next_sa(Q, new_state, new_action)
+                - Q_sa
+            )
+            # store that value in Q-function
+            Q.set(state, action, updated_Q_sa)
+
+            # move on to next timestep
+            state = new_state
+            action = new_action
+            t += 1
+
+            if done:
+                break
+        duration = time.time() - start_time
+        stats.append((t, R, duration))
+
+    episode_lengths, episode_returns, episode_times = zip(*stats)
+    return Q, (episode_lengths, episode_returns, episode_times), diffs
 
 
 def sarsa(
@@ -28,43 +88,21 @@ def sarsa(
         Q is a numpy array Q[s,a] -> state-action value.
         stats is a list of tuples giving the episode lengths and returns.
     """
-
     Q = init_Q(env)
     policy = EpsilonGreedyPolicy(Q, 0.1)
-    # Keeps track of useful statistics
-    stats = []
-    diffs = []
-    R = 0
-    for i_episode in range(num_episodes):
-        start_time = time.time()
-        policy.Q = Q
-        state = env.reset()
-        i = 0
-        old_R = R
-        R = 0
-        action = policy.sample_action(state)
-        while True:
-            (new_state, reward, done, _) = env.step(action)
-            policy.Q = Q
-            new_action = policy.sample_action(new_state)
-            R += reward * (discount_factor ** i)
-            update = Q.get(state, action) + alpha * (
-                reward
-                + discount_factor * Q.get(new_state, new_action)
-                - Q.get(state, action)
-            )
-            # update_Q(Q, state, action, update)
-            Q.set(state, action, update)
-            state = new_state
-            action = new_action
-            i += 1
-            if done:
-                break
-        T = time.time() - start_time
-        stats.append((i, R, T))
 
-    episode_lengths, episode_returns, episode_times = zip(*stats)
-    return Q, (episode_lengths, episode_returns, episode_times), diffs
+    def get_Q_for_next_sa(Q, new_state, new_action):
+        return Q.get(new_state, new_action)
+
+    return train_sarsa(
+        env=env,
+        num_episodes=num_episodes,
+        Q=Q,
+        policy=policy,
+        get_Q_for_next_sa=get_Q_for_next_sa,
+        discount_factor=discount_factor,
+        alpha=alpha,
+    )
 
 
 def expected_sarsa(
@@ -92,51 +130,34 @@ def expected_sarsa(
         Q is a numpy array Q[s,a] -> state-action value.
         stats is a list of tuples giving the episode lengths and returns.
     """
-
     Q = init_Q(env)
     policy = EpsilonGreedyPolicy(Q, 0.1)
-    # Keeps track of useful statistics
 
-    stats = []
-    diffs = []
-    R = 0
-    nA = get_nof_actions(env)
-    for i_episode in range(num_episodes):
-        s = env.reset()
-        i = 0
-        R = 0
-        a = policy.sample_action(s)
-        start_time = time.time()
-        while True:
-            policy.Q = Q
-            s_, r, done, _ = env.step(a)
-            ba = Q.get_best_action(s_)
-            non_greedy_action_probability = policy.epsilon / nA
-            greedy_action_probability = (
-                (1 - policy.epsilon)
-            ) + non_greedy_action_probability
-            expected_q = sum(
-                Q.get(s_, i) * greedy_action_probability
-                if i == ba
-                else Q.get(s_, i) * non_greedy_action_probability
-                for i in range(nA)
-            )
-            update = Q.get(s, a) + alpha * (
-                r + discount_factor * expected_q - Q.get(s, a)
-            )
-            Q.set(s, a, update)
-            a_ = policy.sample_action(s_)
-            s = s_
-            a = a_
-            R += r * (discount_factor ** i)
-            i += 1
-            if done:
-                break
+    actions = get_actions(env)
+    non_greedy_action_prob = policy.epsilon / len(list(actions))
+    greedy_action_prob = ((1 - policy.epsilon)) + non_greedy_action_prob
 
-        T = time.time() - start_time
-        stats.append((i, R, T))
-    episode_lengths, episode_returns, episode_times = zip(*stats)
-    return Q, (episode_lengths, episode_returns, episode_times), diffs
+    def policy_prob(s, a, best_a):
+        "return probability of a being chosen from s under policy."
+        return greedy_action_prob if a == best_a else non_greedy_action_prob
+
+    def get_Q_for_next_sa(Q, new_state, new_action):
+        best_a = Q.get_best_action(new_state)
+        expected_q = sum(
+            policy_prob(new_state, a, best_a) * Q.get(new_state, a)
+            for a in actions
+        )
+        return expected_q
+
+    return train_sarsa(
+        env=env,
+        num_episodes=num_episodes,
+        Q=Q,
+        policy=policy,
+        get_Q_for_next_sa=get_Q_for_next_sa,
+        discount_factor=discount_factor,
+        alpha=alpha,
+    )
 
 
 NAME2ALG = {"expected_sarsa": expected_sarsa, "sarsa": sarsa}

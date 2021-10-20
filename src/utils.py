@@ -1,6 +1,7 @@
 import json
 from collections import defaultdict
 from pathlib import Path
+import itertools
 
 import numpy as np
 import gym
@@ -33,19 +34,19 @@ def init_Q(env):
     return dictQ(env)
 
 
-class matrixQ:
-    def __init__(self, env):
-        self.Q = np.zeros((env.observation_space.n, env.action_space.n))
-        self.env = env
+# class matrixQ:
+#     def __init__(self, env):
+#         self.Q = np.zeros((env.observation_space.n, env.action_space.n))
+#         self.env = env
 
-    def get_best_action(self, state):
-        return self.Q[state].argmax()
+#     def get_best_action(self, state):
+#         return self.Q[state].argmax()
 
-    def get(self, state, action):
-        return self.Q[state, action]
+#     def get(self, state, action):
+#         return self.Q[state, action]
 
-    def set(self, state, action, value):
-        self.Q[state, action] = value
+#     def set(self, state, action, value):
+#         self.Q[state, action] = value
 
 
 class EpsilonGreedyPolicy(object):
@@ -82,9 +83,19 @@ def get_samples_used(episode_lenghts):
 
 
 def get_nof_actions(env):
-    if type(env.action_space) == gym.spaces.tuple_space.Tuple:
+    if type(env.action_space) == gym.spaces.tuple.Tuple:
         return np.prod([act_space.n for act_space in env.action_space.spaces])
     return env.action_space.n
+
+
+def get_actions(env):
+    if type(env.action_space) == gym.spaces.tuple.Tuple:
+        return list(
+            itertools.product(
+                *[range(act_space.n) for act_space in env.action_space.spaces]
+            )
+        )
+    return range(env.action_space.n)
 
 
 def running_mean(vals, n=1):
@@ -103,7 +114,3 @@ def write(fpath, to_write):
     if str(fpath).endswith(".json"):
         with open(fpath, "w") as f:
             f.write(json.dumps(to_write))
-
-
-def get_env(env_name):
-    gym.env
