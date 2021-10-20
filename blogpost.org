@@ -12,7 +12,7 @@
 #+LATEX_HEADER_EXTRA: \AfterEndEnvironment{minted}{\end{mdframed}}
 #+MACRO: NEWLINE @@latex:\\@@ @@html:<br>@@
 #+PROPERTY: header-args :exports both :session blogpost :cache :results value
-#+OPTIONS: ^:nil
+#+OPTIONS: ^:nil toc:nil
 #+LATEX_COMPILER: pdflatex
 
 * Introduction
@@ -93,7 +93,7 @@ Hence, both SARSA and ESARSA learn from an agent that is largely acting
 according to their current version of the Q-function. The crucial difference
 which distinguishes SARSA from ESARSA is in the rule through which our
 Q-function is updated (based on an experience). In SARSA, the update rule is:
-#+begin_export latex
+
 \begin{equation}
      Q(S_{t}, A_{t}) = Q(S_{t}, A_{t}) + \alpha (R_{t+1}+\gamma Q(S_{t+1}, A_{t+1})-Q(S_{t}, A_{t}))
 \end{equation}
@@ -103,8 +103,8 @@ whereas in ESARSA, it is:
 \begin{equation}
 Q(S_{t}, a_{t}) = Q(S_{t}, a_{t}) + \alpha (R_{t+1}+\gamma \sum_{a} \pi (a | S_{t+1}) Q(S_{t+1}, a_{t+1})-Q(s_{t}, a_{t}))
 \end{equation}
-#+end_export\\
-Note the structural similarity between (1) and (2): both are of the form:\\
+
+Note the structural similarity between (1) and (2), both are of the form\\
 $$Q(S_{t},a_{t}) = Q(S_{t},a_{t}) + \alpha(U_{t} - Q(S_{t},A_{t}))$$\\
 This update step can be seen as "pushing" $Q(S_{t}, a_{t})$ towards $U_{t}$, which we also
 call the /target/.
@@ -183,12 +183,8 @@ code.
 Since we are comparing two approaches that are both designed to have a finite
 amount of states, we want the state space to be non-continuous. We often refer
 to tasks with these kind of state-spaces as /tabular/ tasks. For our
-experiments, we selected 4 tabular tasks from the gym library:
-
-- Copy-v0
-- Taxi-v2
-- Blackjack-v0
-- FrozenLake8x8-v0
+experiments, we selected 4 tabular tasks from the gym library: Copy-v0,
+Taxi-v2, Blackjack-v0, and FrozenLake8x8-v0.
 
 For a fair comparison, the strengths and weaknesses of SARSA and ESARSA have to
 be taken into account. Due to the distinctive action-selection methods, SARSA
