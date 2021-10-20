@@ -189,14 +189,14 @@ experiments, we selected 4 tabular tasks from the gym library:
 - Copy-v0
 - Taxi-v2
 - Blackjack-v0
-- FrozenLake8x8-v0
+- FrozenLake-v0
 
 For a fair comparison, the strengths and weaknesses of SARSA and ESARSA have to
 be taken into account. Due to the distinctive action-selection methods, SARSA
 and ESARSA behave differently in environments with different amounts of
 observability and uncertainty. Therefore, the first two environments (Copy-v0
 and Taxi-v2) are fully observable with deterministic action-selection and the
-other two (Blackjack-v0 and FrozenLake8x8-v0) are not fully observable and
+other two (Blackjack-v0 and FrozenLake-v0) are not fully observable and
 introduce uncertainty.
 
 For a better grip on the selected environments, let us explain them in a bit
@@ -207,7 +207,7 @@ all times, the location of the agent, passenger, and destination is
 available. The goal in Blackjack-v0 is to find a winning card playing strategy
 against a computer dealer. We selected this environment because +we can become
 millionaires+ of the partial observability and uncertainty of the
-environment. In FrozenLake8x8, the agent is tasked to move across a grid of ice
+environment. In FrozenLake, the agent is tasked to move across a grid of ice
 with holes in it. Because of the slippery nature of the ice, the agent won't
 always move in the intended direction; tension rises! As the agent is not given
 any information in advance of, or during the game, this environment requires
