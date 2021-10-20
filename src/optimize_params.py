@@ -8,7 +8,9 @@ from src.experimentresults import ExperimentResults
 from src.sarsa import NAME2ALG
 
 
-def perform_grid_search(sarsa_alg, env, nof_alphas=30, random_seeds=[42, 420]):
+def perform_grid_search(
+    sarsa_alg, env, nof_alphas=30, random_seeds=[42, 420], n_episodes=1000
+):
     """for given sarsa algorithm, environment and parameters return the optimal
     alpha learning rate"""
     print(f"Finding Optimal Alpha for {sarsa_alg}")
@@ -21,7 +23,7 @@ def perform_grid_search(sarsa_alg, env, nof_alphas=30, random_seeds=[42, 420]):
             env.seed(seed)
             (_, (_, episode_returns_sarsa, _), _,) = sarsa_alg(
                 env,
-                2000,
+                n_episodes,
                 alpha=alpha,
             )
             perf = np.mean(episode_returns_sarsa[-100:])
@@ -32,7 +34,7 @@ def perform_grid_search(sarsa_alg, env, nof_alphas=30, random_seeds=[42, 420]):
     return opt_alpha
 
 
-def get_alg2metadata(env_name, nof_alphas, seeds):
+def get_alg2metadata(env_name, nof_alphas, seeds, n_episodes):
     alg2metadata = {
         alg: {"nof_alphas": nof_alphas, "seeds": seeds}
         for alg in NAME2ALG.keys()
@@ -40,12 +42,12 @@ def get_alg2metadata(env_name, nof_alphas, seeds):
     env = gym.envs.make(env_name)
     for algname, alg in NAME2ALG.items():
         alg2metadata[algname]["opt_alpha"] = perform_grid_search(
-            alg, env, nof_alphas, seeds
+            alg, env, nof_alphas, seeds, n_episodes
         )
     return alg2metadata
 
 
-def run(env_name, nof_alphas=10, seeds=[42, 420, 4200]):
+def run(env_name, nof_alphas=10, seeds=[42, 420, 4200], n_episodes=1000):
     expresults = ExperimentResults.from_storage()
     if expresults.results_present(env_name, nof_alphas, seeds):
         answer = input(
@@ -55,7 +57,7 @@ def run(env_name, nof_alphas=10, seeds=[42, 420, 4200]):
         if not answer.startswith("y"):
             expresults.show_results(env_name)
             return
-    alg2metadata = get_alg2metadata(env_name, nof_alphas, seeds)
+    alg2metadata = get_alg2metadata(env_name, nof_alphas, seeds, n_episodes)
     expresults[env_name].update(alg2metadata)
     expresults.show_results(env_name)
     expresults.write()

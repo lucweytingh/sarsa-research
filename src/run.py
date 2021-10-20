@@ -11,15 +11,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def run(env_name):
-    optimize_params.run(env_name)
+def run(env_name, n_episodes=3000, n_runs=3):
+    optimize_params.run(env_name, n_episodes=n_episodes)
     exp2results = ExperimentResults.from_storage()
     env = gym.envs.make(env_name)
     alg2results = {}
     for name, alg in NAME2ALG.items():
         alpha = exp2results[env_name][name]["opt_alpha"]
         alg2results[name] = get_results(
-            alg, env, alpha, n_runs=3, n_episodes=1000
+            alg, env, alpha, n_runs=n_runs, n_episodes=n_episodes
         )
     plt.close("all")
     plot_results(alg2results, env_name, fname=env_name)
@@ -31,6 +31,7 @@ def get_results(sarsa_fn, env, alpha, n_runs=3, n_episodes=1000):
     lengths = np.zeros((n_episodes, n_runs))
     times = np.zeros((n_episodes, n_runs))
     for r in range(n_runs):
+        print(r)
         seed = seeds[r]
         np.random.seed(seed)
         random.seed(seed)
