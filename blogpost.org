@@ -12,7 +12,7 @@
 #+LATEX_HEADER_EXTRA: \AfterEndEnvironment{minted}{\end{mdframed}}
 #+MACRO: NEWLINE @@latex:\\@@ @@html:<br>@@
 #+PROPERTY: header-args :exports both :session blogpost :cache :results value
-#+OPTIONS: ^:nil
+#+OPTIONS: ^:nil toc:nil
 #+LATEX_COMPILER: pdflatex
 
 * Introduction
@@ -94,7 +94,7 @@ Hence, both SARSA and ESARSA learn from an agent that is largely acting
 according to their current version of the Q-function. The crucial difference
 which distinguishes SARSA from ESARSA is in the rule through which our
 Q-function is updated (based on an experience). In SARSA, the update rule is:
-#+begin_export latex
+
 \begin{equation}
      Q(S_{t}, A_{t}) = Q(S_{t}, A_{t}) + \alpha (R_{t+1}+\gamma Q(S_{t+1}, A_{t+1})-Q(S_{t}, A_{t}))
 \end{equation}
@@ -173,45 +173,44 @@ so, takes longer for every sample).
 
 ** Environments
 
-In our experiment, we need some tasks to test on! Luckily for us, we don't have
-to construct these tasks ourselves. Gym is an open-source toolkit for training
-and developing RL algorithms, and contains tasks that range from learning
-agents to walk, to playing games like pong or pinball. In addition, it provides
-methods for interacting with an environment that are identical for all tasks,
-making it easier for us to run experiments on a range of tasks using the same
-code.
+To run these experiments, we'll need some tasks to solve. Luckily for us, we
+don't have to construct these tasks ourselves. Gym is an open-source toolkit
+for training and developing RL algorithms, and contains tasks that range from
+learning agents to walk, to playing games like pong or pinball. In addition, it
+provides methods for interacting with an environment that are identical for all
+tasks, making it easier for us to run experiments on a range of tasks using the
+same code.
 
 Since we are comparing two approaches that are both designed to have a finite
 amount of states, we want the state space to be non-continuous. We often refer
 to tasks with these kind of state-spaces as /tabular/ tasks. For our
-experiments, we selected 4 tabular tasks from the gym library:
-
-- Copy-v0
-- Taxi-v2
-- Blackjack-v0
-- FrozenLake8x8-v0
+experiments, we selected 4 tabular tasks from the gym library: Copy-v0,
+Taxi-v2, Blackjack-v0, and FrozenLake-v0.
 
 For a fair comparison, the strengths and weaknesses of SARSA and ESARSA have to
-be taken into account. Due to the distinctive action-selection methods, SARSA
-and ESARSA behave differently in environments with different amounts of
-observability and uncertainty. Therefore, the first two environments (Copy-v0
-and Taxi-v2) are fully observable with deterministic action-selection and the
-other two (Blackjack-v0 and FrozenLake8x8-v0) are not fully observable and
-introduce uncertainty.
+be taken into account. Due to the distinct update rules for the Q functions
+they estimate, SARSA and ESARSA behave differently in environments with
+different amounts of observability, uncertainty and actions`. Therefore, the
+first two environments (Copy-v0 and Taxi-v2) are fully observable with
+deterministic transition functions and the other two (Blackjack-v0 and
+FrozenLake-v0) are not fully observable and introduce uncertainty.
 
-For a better grip on the selected environments, let us explain them in a bit
-more detail. Copy-v0 is a simple toy problem where the task is to copy symbols
-from an input to an output tape. Taxi-v2 introduces a bit more complexity. It
-tasks agents to pick up and drop off a passenger at a designated location. At
-all times, the location of the agent, passenger, and destination is
-available. The goal in Blackjack-v0 is to find a winning card playing strategy
-against a computer dealer. We selected this environment because +we can become
-millionaires+ of the partial observability and uncertainty of the
-environment. In FrozenLake8x8, the agent is tasked to move across a grid of ice
-with holes in it. Because of the slippery nature of the ice, the agent won't
-always move in the intended direction; tension rises! As the agent is not given
-any information in advance of, or during the game, this environment requires
-the agent to form a strategy solely on previous paths and rewards.
+To better understand the tasks that our algorithms will be up against, lets
+have a closer look at the chosen environments. Copy-v0 is a simple toy problem,
+the task is to copy symbols from an input to an output tape.  Taxi-v2
+introduces a bit more complexity. It tasks agents with picking up and dropping
+off a passenger at particular locations. These two problems should be solvable
+by both algorithms quite easily, and we expect to see the theoretical tradeoff
+quite clearly.The goal in Blackjack-v0 is to find a winning card playing
+strategy against a computer dealer. Blackjack is a simple game as far as card
+games go, but a nontrivial task for our RL algorithm, nonetheless. We selected
+this environment because +we can become millionaires+ of the partial
+observability and uncertainty of the environment. Finally, in FrozenLake-V0,
+the agent is tasked with moving across a grid of ice with unobservable holes in
+it, which the agent can fall through. What's more, the ice is slippery, this
+means that the agent won't always move in the direction it intends to. These
+factors combined make the environment partially observable, aswell as
+stochastic.
 
 
 ** Seeds
