@@ -188,13 +188,13 @@ experiments, we selected 4 tabular tasks from the gym library:
 - Blackjack-v0
 - FrozenLake8x8-v0
 
-For a fair comparison, the strengths and weaknesses of SARSA and ESARSA in
-terms of action selection have to be taken into account. Due to the distinctive
-action-selection methods, SARSA and ESARSA behave differently in environments
-with different amounts of observability and uncertainty. Therefore, the first
-two environments (Copy-v0 and Taxi-v2) are fully observable with deterministic
-action-selection and the other two (Blackjack-v0 and FrozenLake8x8-v0) are not
-fully observable and introduce uncertainty.
+For a fair comparison, the strengths and weaknesses of SARSA and ESARSA have to
+be taken into account. Due to the distinctive action-selection methods, SARSA
+and ESARSA behave differently in environments with different amounts of
+observability and uncertainty. Therefore, the first two environments (Copy-v0
+and Taxi-v2) are fully observable with deterministic action-selection and the
+other two (Blackjack-v0 and FrozenLake8x8-v0) are not fully observable and
+introduce uncertainty.
 
 For a better grip on the selected environments, let us explain them in a bit
 more detail. Copy-v0 is a simple toy problem where the task is to copy symbols
