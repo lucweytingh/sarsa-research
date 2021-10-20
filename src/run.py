@@ -22,7 +22,12 @@ def run(env_name, n_episodes=3000, n_runs=3):
             alg, env, alpha, n_runs=n_runs, n_episodes=n_episodes
         )
     plt.close("all")
-    plot_results(alg2results, env_name, fname=env_name)
+    plot_results(
+        alg2results,
+        env_name,
+        fname=env_name,
+        running_mean_n=int(n_episodes / 50),
+    )
 
 
 def get_results(sarsa_fn, env, alpha, n_runs=3, n_episodes=1000):
