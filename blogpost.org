@@ -201,7 +201,7 @@ policy is equal. Given that it is important for the research we perform to be
 reproducible, we seed our environments using some constants. A seed ensures
 that we can expect the /same/ randomness every time we seed with the same
 integer. To ensure that we are not overfitting to a particular seed, we also
-make sure to execute multiple runs with different seeds whenever we train a
+make sure to execute multiple runs with different seeds whenever we train an
 algorithm in an environment.
 
 
@@ -213,29 +213,29 @@ representing the learning rate in the SARSA and ESARSA equations. It may seem
 tempting at first to choose a reasonable value, say 0.1, for $\alpha$ and keep
 it constant across all experiments for SARSA and ESARSA. After all, as long as
 we keep it constant, the comparison is fair, right? Well, not quite. SARSA and
-ESARSA likely have different a optimal $\alpha$, and this is related to the
+ESARSA likely have a different optimal $\alpha$, and this is related to the
 variance of their updates. In short, since we are calculating an expectation
-over the possible next states and their Q in ESARSA, and simply sampling one in
-SARSA (the one we chose), the SARSA updates will have much higher variance
-thatn the ESARSA updates. This means that SARSA has to be more careful, and
-take smaller steps with each update, than ESARSA. This also ties into the
+over the possible next states and their Q-values in ESARSA, and simply sampling
+one in SARSA (the one we chose), the SARSA updates will have much higher
+variance than the ESARSA updates. This means that SARSA has to be more careful,
+and take smaller steps with each update, than ESARSA. This also ties into the
 theory of the computational time/sample efficiency tradeoff. Each update that
 ESARSA does will be more expensive, but it can then afford to take a larger
 step in the direction it computed, than SARSA. Thus, in order to facilitate a
 fair comparison between both algorithms, its important to make sure both can
-use their strengths to the fullest extent, which requires setting different
-$\alpha$s. To this end, we set up a parameter search which finds the optimal
+use their strengths to the fullest extent, which requires setting a different
+$\alpha$. To this end, we set up a parameter search which finds the optimal
 alpha for each algorithm, environment combination, and use that when running
 our experiments.
 
 The other hyperparameter that is present in both of our algorithms is the
-discount factor $\gamma$, it represents how much our algorithms cares about
-future rewards, as opposed to immediate rewards. Unlike $\alpha$, its optimal
-value is not influenced by the variance of the updates of the algorithms,
-besides this it is present in both update rules in the same place, being
-multiplied by the estimate of the reward of the next state. For these reasons,
-we can safely keep it at a  constant value for both of our algorithms, while
-still assuring fair comparison.
+discount factor $\gamma$, it represents how much our algorithms care about
+rewards in the future, as opposed to immediate rewards. Unlike
+$\alpha$, its optimal value is not influenced by the variance of the updates of
+the algorithms, besides this it is present in both update rules in the same
+place, being multiplied by the estimate of the reward of the next state. For
+these reasons, we can safely keep it at a constant value for both of our
+algorithms, while still assuring fair comparison.
 
 * Results
 #+CAPTION: Mean episode return SARSA and Expected SAESA for the CliffWalking-v0 env
