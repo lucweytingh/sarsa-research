@@ -104,13 +104,8 @@ whereas in ESARSA, it is:
 \begin{equation}
 Q(S_{t}, a_{t}) = Q(S_{t}, a_{t}) + \alpha (R_{t+1}+\gamma \sum_{a} \pi (a | S_{t+1}) Q(S_{t+1}, a_{t+1})-Q(s_{t}, a_{t}))
 \end{equation}
-<<<<<<< HEAD
-
-Note the structural similarity between (1) and (2), both are of the form\\
-=======
 #+end_export
 Note the structural similarity between (1) and (2): both are of the form:\\
->>>>>>> be5387801518c4454b28ee7dfb1b57012fe721eb
 $$Q(S_{t},a_{t}) = Q(S_{t},a_{t}) + \alpha(U_{t} - Q(S_{t},A_{t}))$$\\
 This update step can be seen as "pushing" $Q(S_{t}, a_{t})$ towards $U_{t}$, which we also
 call the /target/.
@@ -195,10 +190,10 @@ Taxi-v2, Blackjack-v0, and FrozenLake-v0.
 For a fair comparison, the strengths and weaknesses of SARSA and ESARSA have to
 be taken into account. Due to the distinct update rules for the Q functions
 they estimate, SARSA and ESARSA behave differently in environments with
-different amounts of observability and uncertainty. Therefore, the first two
-environments (Copy-v0 and Taxi-v2) are fully observable with deterministic
-action-selection and the other two (Blackjack-v0 and FrozenLake-v0) are not
-fully observable and introduce uncertainty.
+different amounts of observability, uncertainty and actions`. Therefore, the
+first two environments (Copy-v0 and Taxi-v2) are fully observable with
+deterministic transition functions and the other two (Blackjack-v0 and
+FrozenLake-v0) are not fully observable and introduce uncertainty.
 
 To better understand the tasks that our algorithms will be up against, lets
 have a closer look at the chosen environments. Copy-v0 is a simple toy problem,
