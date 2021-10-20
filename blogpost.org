@@ -55,6 +55,7 @@ some additional text here.>>
 # paul: Perhaps we need to introduce the concept of Q-functions and policies
 # here
 
+
 ** SARSA or ESARSA: what's the difference?
 
 # Both algorithms find the best policy by learning an optimal /action-value/
@@ -63,7 +64,7 @@ some additional text here.>>
 # receive if it takes action $A$ from state $S$?
 
 Of course, before training, we do not know the Q-function, i.e. how valuable
-each action is[fn:: If we would know this, we would not need to learn
+each action is[fn:: If we would know this, we would not really need to learn
 anything.]. Both in SARSA and ESARSA, we let an agent interact with our
 environment to generate experience. Using this experience, we update the
 Q-function, and since the agent's policy is based on the Q-function, so does
@@ -103,8 +104,13 @@ whereas in ESARSA, it is:
 \begin{equation}
 Q(S_{t}, a_{t}) = Q(S_{t}, a_{t}) + \alpha (R_{t+1}+\gamma \sum_{a} \pi (a | S_{t+1}) Q(S_{t+1}, a_{t+1})-Q(s_{t}, a_{t}))
 \end{equation}
+<<<<<<< HEAD
 
 Note the structural similarity between (1) and (2), both are of the form\\
+=======
+#+end_export
+Note the structural similarity between (1) and (2): both are of the form:\\
+>>>>>>> be5387801518c4454b28ee7dfb1b57012fe721eb
 $$Q(S_{t},a_{t}) = Q(S_{t},a_{t}) + \alpha(U_{t} - Q(S_{t},A_{t}))$$\\
 This update step can be seen as "pushing" $Q(S_{t}, a_{t})$ towards $U_{t}$, which we also
 call the /target/.
@@ -165,7 +171,7 @@ that the practical experiments support the theoretical claims. In the plots, we
 expect to observe that ESARSA learns faster when we observe the amount of
 samples it needs, and thus, has a higher sample efficiency. Likewise, we expect
 SARSA to learn faster than ESARSA when we observe the return as a function of
-the time elapsed, because the latter has a higher computaional complexity (and
+the time elapsed, because the latter has a higher computational complexity (and
 so, takes longer for every sample).
 
 * Method
@@ -184,14 +190,15 @@ Since we are comparing two approaches that are both designed to have a finite
 amount of states, we want the state space to be non-continuous. We often refer
 to tasks with these kind of state-spaces as /tabular/ tasks. For our
 experiments, we selected 4 tabular tasks from the gym library: Copy-v0,
-Taxi-v2, Blackjack-v0, and FrozenLake8x8-v0.
+Taxi-v2, Blackjack-v0, and FrozenLake-v0.
+
 
 For a fair comparison, the strengths and weaknesses of SARSA and ESARSA have to
 be taken into account. Due to the distinctive action-selection methods, SARSA
 and ESARSA behave differently in environments with different amounts of
 observability and uncertainty. Therefore, the first two environments (Copy-v0
 and Taxi-v2) are fully observable with deterministic action-selection and the
-other two (Blackjack-v0 and FrozenLake8x8-v0) are not fully observable and
+other two (Blackjack-v0 and FrozenLake-v0) are not fully observable and
 introduce uncertainty.
 
 For a better grip on the selected environments, let us explain them in a bit
@@ -202,7 +209,7 @@ all times, the location of the agent, passenger, and destination is
 available. The goal in Blackjack-v0 is to find a winning card playing strategy
 against a computer dealer. We selected this environment because +we can become
 millionaires+ of the partial observability and uncertainty of the
-environment. In FrozenLake8x8, the agent is tasked to move across a grid of ice
+environment. In FrozenLake-v0, the agent is tasked to move across a grid of ice
 with holes in it. Because of the slippery nature of the ice, the agent won't
 always move in the intended direction; tension rises! As the agent is not given
 any information in advance of, or during the game, this environment requires
@@ -211,7 +218,7 @@ the agent to form a strategy solely on previous paths and rewards.
 
 ** Seeds
 
-Many of the environments that we run our algorithms on are stochastic (that is
+Some of the environments that we run our algorithms on are stochastic (that is
 to say: they involve some randomness). This means that we can expect slightly
 different results every time we interact with the environment, even if our
 policy is equal. Given that it is important for the research we perform to be
@@ -247,12 +254,14 @@ our experiments.
 
 The other hyperparameter that is present in both of our algorithms is the
 discount factor $\gamma$, it represents how much our algorithms care about
-rewards in the future, as opposed to immediate rewards. Unlike
-$\alpha$, its optimal value is not influenced by the variance of the updates of
-the algorithms, besides this it is present in both update rules in the same
-place, being multiplied by the estimate of the reward of the next state. For
-these reasons, we can safely keep it at a constant value for both of our
-algorithms, while still assuring fair comparison.
+rewards in the future, as opposed to immediate rewards. Unlike $\alpha$, its
+optimal value is not influenced by the variance of the updates of the
+algorithms, besides this it is present in both update rules in the same place,
+being multiplied by the estimate of the reward of the next state. Besides this,
+it is often viewed as an attribute of the problem (how much do we care about
+future rewards) as opposed to the algorithm. For these reasons, we can safely
+keep it at a constant value for both of our algorithms, while still assuring
+fair comparison.
 
 * Results
 #+CAPTION: Mean episode return SARSA and Expected SARSA for the CliffWalking-v0 env
