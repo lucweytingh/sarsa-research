@@ -44,7 +44,6 @@ def sarsa(
         R = 0
         action = policy.sample_action(state)
         while True:
-
             (new_state, reward, done, _) = env.step(action)
             policy.Q = Q
             new_action = policy.sample_action(new_state)
@@ -105,23 +104,20 @@ def expected_sarsa(
     for i_episode in range(num_episodes):
         s = env.reset()
         i = 0
-        old_R = R
         R = 0
         a = policy.sample_action(s)
         start_time = time.time()
         while True:
+            policy.Q = Q
             s_, r, done, _ = env.step(a)
-            a_ = policy.sample_action(s_)
             ba = Q.get_best_action(s_)
-
-            q_max = Q.get(s_, ba)
             non_greedy_action_probability = policy.epsilon / nA
             greedy_action_probability = (
                 (1 - policy.epsilon)
             ) + non_greedy_action_probability
             expected_q = sum(
                 Q.get(s_, i) * greedy_action_probability
-                if Q.get(s_, i) == q_max
+                if i == ba
                 else Q.get(s_, i) * non_greedy_action_probability
                 for i in range(nA)
             )
@@ -129,9 +125,10 @@ def expected_sarsa(
                 r + discount_factor * expected_q - Q.get(s, a)
             )
             Q.set(s, a, update)
+            a_ = policy.sample_action(s_)
             s = s_
             a = a_
-            R += r
+            R += r * (discount_factor ** i)
             i += 1
             if done:
                 break
