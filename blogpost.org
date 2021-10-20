@@ -82,18 +82,23 @@ function. In SARSA, our update rule is:
 whereas in ESARSA, it is:
 # #+begin_export latex
 \begin{equation}
-Q(s_{t}, a_{t}) = Q(s_{t}, a_{t}) + \alpha (r_{t+1}+\gamma \sum_{a} \pi (a | s_{t+1}) Q(s_{t+1}, a)-Q(s_{t}, a_{t}))
+Q(S_{t}, a_{t}) = Q(S_{t}, a_{t}) + \alpha (R_{t+1}+\gamma \sum_{a} \pi (a | S_{t+1}) Q(S_{t+1}, a_{t+1})-Q(s_{t}, a_{t}))
 \end{equation}
 #+end_export\\
-The important difference here is that SARSA's update rules uses the actual
-trajectory, i.e. the actual action the agent picked at the next state (which
-may have been a random, terrible action). In contrast, ESARSA uses the expected
-reward according to the current policy, i.e. weighting the rewards for each of
-the possible next actions by the probability of taking that action.
+Note the structural similarity between (1) and (2): both are of the form:\\
+$$Q(S_{t},a_{t}) = Q(S_{t},a_{t}) + \alpha(U_{t} - Q(S_{t},A_{t}))$$\\
+This update step can be seen as pushing $Q(S_{t}, a_{t})$ towards $U_{t}$, which we also
+call the /target/.
+
+The important difference here is that SARSA's target is based on the taken
+trajectory, i.e. the actual action the agent picked at the next state. In
+contrast, ESARSA uses the expected reward according to the current policy,
+i.e. weighting the rewards for each of the possible next actions by the
+probability of taking that action.
 
 As you can already see from the complexity of the update equations, ESARSA
 requires more computation per update step than SARSA. On the flipside, however,
-ESARSA is expected to require fewer update steps.
+ESARSA is claimed to require fewer update steps.
 
 
 #   assigns a numerical value to each state $S$ and
