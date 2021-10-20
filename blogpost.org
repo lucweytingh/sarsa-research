@@ -200,15 +200,17 @@ introduce uncertainty.
 
 For a better grip on the selected environments, let us explain them in a bit
 more detail. Copy-v0 is a simple toy problem where the task is to copy symbols
-from an input to an output tape. In Taxi-v2, the agent is tasked with picking
-up and dropping off a passenger at a designated location. At all times, the
-location of the agent, passenger, and destination is available. It is therefore
-a fully observable environment. The goal in Blackjack-v0 is to find a winning
-card playing strategy against a computer dealer. We selected this environment
-because +we can become millionaires+ of the partial observability and
-uncertainty of the environment. In FrozenLake8x8, the agent is tasked to move
-across a grid of ice with holes in it. Because of the slippery nature of the
-ice, the agent won't always move in the intended direction; tension rises!
+from an input to an output tape. Taxi-v2 introduces a bit more complexity. It
+tasks agents to pick up and drop off a passenger at a designated location. At
+all times, the location of the agent, passenger, and destination is
+available. The goal in Blackjack-v0 is to find a winning card playing strategy
+against a computer dealer. We selected this environment because +we can become
+millionaires+ of the partial observability and uncertainty of the
+environment. In FrozenLake8x8, the agent is tasked to move across a grid of ice
+with holes in it. Because of the slippery nature of the ice, the agent won't
+always move in the intended direction; tension rises! As the agent is not given
+any information in advance of, or during the game, this environment requires
+the agent to form a strategy solely on previous paths and rewards.
 
 
 ** Seeds
