@@ -15,7 +15,7 @@ def perform_grid_search(
     alpha learning rate"""
     print(f"Finding Optimal Alpha for {sarsa_alg}")
     alpha2performance = {}
-    for alpha in np.linspace(0.1, 1, nof_alphas):
+    for alpha in np.linspace(0.001, 1, nof_alphas):
         perfs = []
         for seed in random_seeds:
             np.random.seed(seed)
@@ -47,7 +47,7 @@ def get_alg2metadata(env_name, nof_alphas, seeds, n_episodes):
     return alg2metadata
 
 
-def run(env_name, nof_alphas=10, seeds=[42, 420, 4200], n_episodes=1000):
+def run(env_name, nof_alphas=30, seeds=[42, 420, 4200], n_episodes=1000):
     expresults = ExperimentResults.from_storage()
     if expresults.results_present(env_name, nof_alphas, seeds):
         answer = input(
