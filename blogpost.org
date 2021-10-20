@@ -183,13 +183,30 @@ amount of states, we want the state space to be non-continuous. We often refer
 to tasks with these kind of state-spaces as /tabular/ tasks. For our
 experiments, we selected 4 tabular tasks from the gym library:
 
-1. Copy-V0, simple, toy
-2. Taxi-v2, fully observable
-2. Blackjack-v0, partial observability
-3. FrozenLake8x8-v0: stochastic
+- Copy-v0
+- Taxi-v2
+- Blackjack-v0
+- FrozenLake8x8-v0
 
-TODO:: write about why we choose these
+For a fair comparison, the strengths and weaknesses of SARSA and ESARSA in
+terms of action selection have to be taken into account. Due to the distinctive
+action-selection methods, SARSA and ESARSA behave differently in environments
+with different amounts of observability and uncertainty. Therefore, the first
+two environments (Copy-v0 and Taxi-v2) are fully observable with deterministic
+action-selection and the other two (Blackjack-v0 and FrozenLake8x8-v0) are not
+fully observable and introduce uncertainty.
 
+For a better grip on the selected environments, let us explain them in a bit
+more detail. Copy-v0 is a simple toy problem where the task is to copy symbols
+from an input to an output tape. In Taxi-v2, the agent is tasked with picking
+up and dropping off a passenger at a designated location. At all times, the
+location of the agent, passenger, and destination is available. It is therefore
+a fully observable environment. The goal in Blackjack-v0 is to find a winning
+card playing strategy against a computer dealer. We selected this environment
+because +we can become millionaires+ of the partial observability and
+uncertainty of the environment. In FrozenLake8x8, the agent is tasked to move
+across a grid of ice with holes in it. Because of the slippery nature of the
+ice, the agent won't always move in the intended direction; tension rises!
 
 
 ** Seeds
@@ -238,7 +255,7 @@ these reasons, we can safely keep it at a constant value for both of our
 algorithms, while still assuring fair comparison.
 
 * Results
-#+CAPTION: Mean episode return SARSA and Expected SAESA for the CliffWalking-v0 env
+#+CAPTION: Mean episode return SARSA and Expected SARSA for the CliffWalking-v0 env
 #+NAME:   fig:cliffwalk
 [[./src/CliffWalking-v0.png]]
 * Conclusion
