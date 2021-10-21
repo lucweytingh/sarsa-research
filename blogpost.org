@@ -260,6 +260,21 @@ keep it at a constant value for both of our algorithms, while still assuring
 fair comparison.
 
 * Results
+** =Frozenlake=
+We can see clearly that within few steps, ESARSA exceeds the performance of
+SARSA. This could be attributed to the fact that ESARSA more quickly learns to
+be risk-averse: it is weighs in the risk of falling off when walking right
+along the edge of the cliff. SARSA, in contrast, only looks at the actual path
+taken, and may therefore learn the risk of walking along the cliff less
+quickly. After all it could walk along the cliff for 9 steps safely and only
+learn the danger once it actually falls of (due to e.g. an $\epsilon$-picked
+action).
+
+#+CAPTION: Mean episode return over SARSA and expected SARSA for the FrozenLake-v1 env
+#+NAME:   fig:cliffwalk
+[[plots/FrozenLake-v1.png]]
+
+**
 #+CAPTION: Mean episode return SARSA and Expected SARSA for the CliffWalking-v0 env
 #+NAME:   fig:cliffwalk
 [[./src/CliffWalking-v0.png]]
