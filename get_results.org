@@ -16,21 +16,21 @@
 
 For the Blackjack-v0 env:
 #+BEGIN_SRC shell
-python src/run.py Blackjack-v0 --n_episodes 100000 --n_optimize 20 --n_runs 200
+python src/run.py Blackjack-v0 --n_episodes 100000 --n_optimize 5 --n_runs 50
 #+END_SRC
 
 For the Copy-v0 env:
 #+BEGIN_SRC shell
-python src/run.py Copy-v0 --n_optimize 20 --n_runs 200
+python src/run.py Copy-v0 --n_optimize 5 --n_runs 50
 #+END_SRC
 
 For the FrozenLake-v0 env:
 #+BEGIN_SRC shell
-python src/run.py FrozenLake-v1 --n_optimize 20 --n_runs 200
+python src/run.py FrozenLake-v1 --n_optimize 5 --n_runs 50
 #+END_SRC
 
 
 For the Taxi-v3 env:
 #+BEGIN_SRC shell
-python src/run.py Taxi-v3 --n_optimize 20 --n_runs 200
+python src/run.py Taxi-v3 --n_optimize 5 --n_runs 50
 #+END_SRC
