@@ -11,15 +11,22 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def run(env_name, n_episodes=3000, n_runs=3):
-    optimize_params.run(env_name, n_episodes=n_episodes)
+def run(env_name, n_episodes=3000, n_optimize=20, n_runs=200):
+    optim_seeds = np.arange(n_optimize)
+    run_seeds = np.arange(n_runs) * 1000
+    optimize_params.run(env_name, seeds=optim_seeds, n_episodes=n_episodes)
     exp2results = ExperimentResults.from_storage()
     env = gym.envs.make(env_name)
     alg2results = {}
     for name, alg in NAME2ALG.items():
         alpha = exp2results[env_name][name]["opt_alpha"]
         alg2results[name] = get_results(
-            alg, env, alpha, n_runs=n_runs, n_episodes=n_episodes
+            alg,
+            env,
+            alpha,
+            n_runs=n_runs,
+            seeds=run_seeds,
+            n_episodes=n_episodes,
         )
     plt.close("all")
     plot_results(
@@ -30,8 +37,9 @@ def run(env_name, n_episodes=3000, n_runs=3):
     )
 
 
-def get_results(sarsa_fn, env, alpha, n_runs=3, n_episodes=1000):
-    seeds = np.arange(n_runs) * 10000
+def get_results(sarsa_fn, env, alpha, n_runs=3, seeds=None, n_episodes=1000):
+    if not seeds:
+        seeds = np.arange(n_runs) * 10
     returns = np.zeros((n_episodes, n_runs))
     lengths = np.zeros((n_episodes, n_runs))
     times = np.zeros((n_episodes, n_runs))
