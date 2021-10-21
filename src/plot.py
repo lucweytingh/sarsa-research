@@ -30,7 +30,6 @@ def plot_returns_over_variable(
     ax=None,
     color=None,
     show_ylabel=True,
-    running_mean_n=50,
 ):
     """Plot returns over some variable.
 
@@ -47,17 +46,37 @@ def plot_returns_over_variable(
     - color: the color to use. default is based on alg_name.
     - running_mean_n: how many samples should the running mean avg over.
     """
+    if xvar_name == "time":
+        # convert x to us
+        x = (x * 100000).astype(int)
     if ax is None:
         ax = plt.gca()
     if color is None:
         color = ALG2COLOR.get(alg_name, "tab:blue")
+    n_runs = x.shape[1]
+    nof_x = int(x.sum(0).max())
+    # we want to compute mean and std over various runs, divide by 0 so it's
+    # all nan
+    x2avg_episode_returns = np.zeros((nof_x, n_runs))
+    x2avg_episode_returns[:] = np.nan
+    for run_idx in range(x.shape[1]):
+        this_x = x[:, run_idx]
+        this_returns = episode_returns[:, run_idx]
+        x2avg_episode_return = []
+        for nof_updates, episode_return in zip(this_x, this_returns):
+            x2avg_episode_return.extend(
+                [episode_return / nof_updates] * int(nof_updates)
+            )
+        x2avg_episode_returns[
+            : len(x2avg_episode_return), run_idx
+        ] = x2avg_episode_return
 
-    # we want to compute mean and std over various runs
-    mean_x = np.mean(x, axis=1)
-    mean_episode_returns = np.mean(episode_returns, axis=1)
-    std_episode_returns = np.std(episode_returns, axis=1)
+    # mean_x = np.mean(x, axis=1)
+    mean_episode_returns = np.nanmean(x2avg_episode_returns, axis=1)
+    std_episode_returns = np.nanstd(x2avg_episode_returns, axis=1)
 
     # to smooth the plot, we use a running mean for the returns
+    running_mean_n = int(nof_x / 30)
     running_mean_episode_returns = running_mean(
         mean_episode_returns, n=running_mean_n
     )
@@ -65,8 +84,12 @@ def plot_returns_over_variable(
         std_episode_returns, n=running_mean_n
     )
 
-    cumsum_x = np.cumsum(mean_x)[:-running_mean_n]
-
+    cumsum_x = np.arange(
+        running_mean_episode_returns.size
+    )  # np.cumsum(mean_x)[:-running_mean_n]
+    if xvar_name == "time":
+        # convert us to ms
+        cumsum_x = cumsum_x.astype(int)
     ax.fill_between(
         cumsum_x,
         running_mean_episode_returns + running_std_episode_returns,
@@ -78,13 +101,13 @@ def plot_returns_over_variable(
     ax.plot(
         cumsum_x, running_mean_episode_returns, color=color, label=alg_name
     )
-    ax.set_xlabel(xvar_name)
+    ax.set_xlabel(f"{xvar_name} (ms)")
     if show_ylabel:
         ax.set_ylabel("Mean episodic return")
 
 
 def plot_results_for_alg(
-    episode_returns, xvar2results, alg_name, env_name, axs, running_mean_n
+    episode_returns, xvar2results, alg_name, env_name, axs
 ):
     for i, (ax, (xvar_name, results)) in enumerate(
         zip(axs, xvar2results.items())
@@ -97,7 +120,6 @@ def plot_results_for_alg(
             env_name=env_name,
             ax=ax,
             show_ylabel=(i == 0),
-            running_mean_n=running_mean_n,
         )
 
 
@@ -139,7 +161,6 @@ def plot_results(
             alg_name,
             env_name,
             axs,
-            running_mean_n=running_mean_n,
         )
 
     legend_ary = [

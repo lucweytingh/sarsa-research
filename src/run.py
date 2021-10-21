@@ -15,6 +15,7 @@ def run(env_name, n_episodes=3000, n_runs=3):
     optimize_params.run(env_name, n_episodes=n_episodes)
     exp2results = ExperimentResults.from_storage()
     env = gym.envs.make(env_name)
+    env.seed(0)
     alg2results = {}
     for name, alg in NAME2ALG.items():
         alpha = exp2results[env_name][name]["opt_alpha"]
@@ -26,7 +27,7 @@ def run(env_name, n_episodes=3000, n_runs=3):
         alg2results,
         env_name,
         fname=env_name,
-        running_mean_n=int(n_episodes / 50),
+        running_mean_n=5000,
     )
 
 
@@ -36,12 +37,11 @@ def get_results(sarsa_fn, env, alpha, n_runs=3, n_episodes=1000):
     lengths = np.zeros((n_episodes, n_runs))
     times = np.zeros((n_episodes, n_runs))
     for r in range(n_runs):
-        print(r)
-        seed = seeds[r]
-        np.random.seed(seed)
+        seed = int(seeds[r] * 10)
         random.seed(seed)
+        np.random.seed(seed)
+        env.reset()
         env.seed(seed)
-
         (
             _,
             (episode_lengths, episode_returns, episode_times),
