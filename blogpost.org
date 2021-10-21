@@ -184,7 +184,7 @@ Since we are comparing two approaches that are both designed to have a finite
 amount of states, we want the state space to be non-continuous. We often refer
 to tasks with these kind of state-spaces as /tabular/ tasks. For our
 experiments, we selected 4 tabular tasks from the gym library: =Copy-v0=,
-=Taxi-v2=, =Blackjack-v0=, and =FrozenLake-v0=.
+=Taxi-v2=, =Blackjack-v0=, and =FrozenLake-v1=.
 
 For a fair comparison, the strengths and weaknesses of SARSA and ESARSA have to
 be taken into account. Due to the distinct update rules for the Q functions
@@ -192,7 +192,7 @@ they estimate, SARSA and ESARSA behave differently in environments with
 different amounts of observability, uncertainty and actions`. Therefore, the
 first two environments (=Copy-v0= and =Taxi-v2=) are fully observable with
 deterministic transition functions and the other two (Blackjack-v0 and
-FrozenLake-v0) are not fully observable and introduce uncertainty.
+FrozenLake-v1) are not fully observable and introduce uncertainty.
 
 To better understand the tasks that our algorithms will be up against, lets
 have a closer look at the chosen environments. Copy-v0 is a simple toy problem,
@@ -204,7 +204,7 @@ quite clearly.The goal in Blackjack-v0 is to find a winning card playing
 strategy against a computer dealer. Blackjack is a simple game as far as card
 games go, but a nontrivial task for our RL algorithm, nonetheless. We selected
 this environment because +we can become millionaires+ of the partial
-observability and uncertainty of the environment. Finally, in FrozenLake-V0,
+observability and uncertainty of the environment. Finally, in FrozenLake-v1,
 the agent is tasked with moving across a grid of ice with unobservable holes in
 it, which the agent can fall through. What's more, the ice is slippery, this
 means that the agent won't always move in the direction it intends to. These
@@ -260,6 +260,16 @@ keep it at a constant value for both of our algorithms, while still assuring
 fair comparison.
 
 * Results
+** =Copy=
+#+CAPTION: Mean episode return over SARSA and expected SARSA for the Copy-v0 env
+#+NAME:   fig:copy
+[[./plots/Copy-v0 (50 runs).png]]
+
+** =Taxi=
+#+CAPTION: Mean episode return over SARSA and expected SARSA for the Copy-v0 env
+#+NAME:   fig:taxi
+[[./plots/Taxi-v3os (50 runs).png]]
+
 ** =Frozenlake=
 We can see clearly that within a short number of steps and within a short
 amount of time, ESARSA exceeds the performance of SARSA. This could be
@@ -276,12 +286,8 @@ fell off more often and quickly!
 
 #+CAPTION: Mean episode return over SARSA and expected SARSA for the FrozenLake-v1 env
 #+NAME:   fig:frozenlake
-[[./src/plots/FrozenLake-v1.png]]
+[[./plots/FrozenLake-v1 (50 runs).png]]
 
-** =
-#+CAPTION: Mean episode return SARSA and Expected SARSA for the CliffWalking-v0 env
-#+NAME:   fig:cliffwalk
-[[./src/CliffWalking-v0.png]]
 * Conclusion
 
 
