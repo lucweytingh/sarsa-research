@@ -6,7 +6,7 @@
 #+LATEX: \setlength\parindent{0pt}
 #+LaTeX_HEADER: \usepackage{minted}
 #+LaTeX_HEADER: \usepackage{mathpazo}
-#+LATEX_HEADER: \usepackage[margin=0.8in]{geometry}
+#+LATEX_HEADER: \usepackage[margin=0.3in]{geometry}
 #+LATEX_HEADER_EXTRA:  \usepackage{mdframed}
 #+LATEX_HEADER_EXTRA: \BeforeBeginEnvironment{minted}{\begin{mdframed}}
 #+LATEX_HEADER_EXTRA: \AfterEndEnvironment{minted}{\end{mdframed}}
@@ -67,7 +67,7 @@ Of course, before training, we do not know the Q-function, i.e. how valuable
 each action is[fn:: If we would know this, we would not really need to learn
 anything.]. Both in SARSA and ESARSA, we let an agent interact with our
 environment to generate experience. Using this experience, we update the
-Q-function, and since the agent's policy is based on the Q-function, so does
+Q-function, and since the agent's policy is based on the Q-function, so is
 the policy (and behaviour) of the agent.
 
 However, by letting our agent base its behaviour on the very Q-function we are
@@ -172,9 +172,8 @@ so, takes longer for every sample).
 * Method
 
 ** Environments
-
 To run these experiments, we'll need some tasks to solve. Luckily for us, we
-don't have to construct these tasks ourselves. Gym is an open-source toolkit
+don't have to construct these tasks ourselves. [[https://gym.openai.com/][=Gym=]] is an open-source toolkit
 for training and developing RL algorithms, and contains tasks that range from
 learning agents to walk, to playing games like pong or pinball. In addition, it
 provides methods for interacting with an environment that are identical for all
@@ -184,14 +183,14 @@ same code.
 Since we are comparing two approaches that are both designed to have a finite
 amount of states, we want the state space to be non-continuous. We often refer
 to tasks with these kind of state-spaces as /tabular/ tasks. For our
-experiments, we selected 4 tabular tasks from the gym library: Copy-v0,
-Taxi-v2, Blackjack-v0, and FrozenLake-v0.
+experiments, we selected 4 tabular tasks from the gym library: =Copy-v0=,
+=Taxi-v2=, =Blackjack-v0=, and =FrozenLake-v0=.
 
 For a fair comparison, the strengths and weaknesses of SARSA and ESARSA have to
 be taken into account. Due to the distinct update rules for the Q functions
 they estimate, SARSA and ESARSA behave differently in environments with
 different amounts of observability, uncertainty and actions`. Therefore, the
-first two environments (Copy-v0 and Taxi-v2) are fully observable with
+first two environments (=Copy-v0= and =Taxi-v2=) are fully observable with
 deterministic transition functions and the other two (Blackjack-v0 and
 FrozenLake-v0) are not fully observable and introduce uncertainty.
 
