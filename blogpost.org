@@ -266,9 +266,14 @@ fair comparison.
 [[./plots/Copy-v0 (50 runs).png]]
 
 ** =Taxi=
-#+CAPTION: Mean episode return over SARSA and expected SARSA for the Copy-v0 env
+#+CAPTION: Mean episode return over SARSA and expected SARSA for the Taxi-v0 env
 #+NAME:   fig:taxi
 [[./plots/Taxi-v3os (50 runs).png]]
+
+** =Blackjack=
+#+CAPTION: Mean episode return over SARSA and expected SARSA for the Blackjack-v0 env
+#+NAME:   fig:blackjack
+[[./plots/Blackjack-v0 (50 runs).png]]
 
 ** =Frozenlake=
 We can see clearly that within a short number of steps and within a short
@@ -284,7 +289,7 @@ Note that we can also observe that SARSA does worse here simply by the fact
 that we have way less update steps and time to look at: the SARSA agent simply
 fell off more often and quickly!
 
-#+CAPTION: Mean episode return over SARSA and expected SARSA for the FrozenLake-v1 env
+#+CAPTION: Mean episode return over SARSA and expected SARSA for the Frozenlake-v1 env
 #+NAME:   fig:frozenlake
 [[./plots/FrozenLake-v1 (50 runs).png]]
 
