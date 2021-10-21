@@ -17,6 +17,13 @@ conda activate sarsa_research
 pip install -e .
 #+END_SRC
 
+or, if you need to update the environment, run this when the environment is active:
+#+BEGIN_SRC sh
+conda env update --file environment.yml  --prune
+#+END_SRC
+
+
+
 ** .env
 Add a =.env= in the root of the project directory and set the following
 parameters:
