@@ -26,7 +26,7 @@ python src/run.py Copy-v0 --n_optimize 20 --n_runs 200
 
 For the FrozenLake-v0 env:
 #+BEGIN_SRC shell
-python src/run.py FrozenLake-v0 --n_optimize 20 --n_runs 200
+python src/run.py FrozenLake-v1 --n_optimize 20 --n_runs 200
 #+END_SRC
 
 
