@@ -47,6 +47,8 @@ def plot_returns_over_variable(
     - color: the color to use. default is based on alg_name.
     - running_mean_n: how many samples should the running mean avg over.
     """
+    if xvar_name == "time":
+        return
     if ax is None:
         ax = plt.gca()
     if color is None:
