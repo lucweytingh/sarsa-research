@@ -50,6 +50,7 @@ def get_results(sarsa_fn, env, alpha, n_runs=3, seeds=None, n_episodes=1000):
         np.random.seed(seed)
         env.reset()
         env.seed(seed)
+        env.action_space.seed(seed)
         (
             _,
             (episode_lengths, episode_returns, episode_times),
