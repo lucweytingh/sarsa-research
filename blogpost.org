@@ -3,17 +3,19 @@
 #+AUTHOR: Luc Weytingh, Paul Lodder, Pim Meerdink, Jeroen Jagt
 #+EMAIL: University of Amsterdam, University of Amsterdam, University of Amsterdam, University of Amsterdam
 #+DATE: \today
-#+LATEX: \setlength\parindent{0pt}
+#+LATEX: \setlength\parindent{20pt}
 #+LaTeX_HEADER: \usepackage{minted}
 #+LaTeX_HEADER: \usepackage{mathpazo}
 #+LATEX_HEADER: \usepackage[margin=0.3in]{geometry}
 #+LATEX_HEADER_EXTRA:  \usepackage{mdframed}
 #+LATEX_HEADER_EXTRA: \BeforeBeginEnvironment{minted}{\begin{mdframed}}
 #+LATEX_HEADER_EXTRA: \AfterEndEnvironment{minted}{\end{mdframed}}
+#+LATEX_CLASS_OPTIONS: [9pt]
 #+MACRO: NEWLINE @@latex:\\@@ @@html:<br>@@
 #+PROPERTY: header-args :exports both :session blogpost :cache :results value
 #+OPTIONS: ^:nil toc:nil
 #+LATEX_COMPILER: pdflatex
+
 
 * Introduction
 
@@ -268,12 +270,12 @@ fair comparison.
 ** =Taxi=
 #+CAPTION: Mean episode return over SARSA and expected SARSA for the Taxi-v0 env
 #+NAME:   fig:taxi
-[[./plots/Taxi-v3os (50 runs).png]]
+[[./plots/Taxi-v3 (50 runs).png]]
 
 ** =Blackjack=
 #+CAPTION: Mean episode return over SARSA and expected SARSA for the Blackjack-v0 env
 #+NAME:   fig:blackjack
-[[./plots/Blackjack-v0 (50 runs).png]]
+[[./plots/Blackjack-v0 (5000 ep, 50 runs).png]]
 
 ** =Frozenlake=
 We can see clearly that within a short number of steps and within a short
