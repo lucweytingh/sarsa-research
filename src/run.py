@@ -31,7 +31,7 @@ def run(env_name, n_episodes=3000, n_runs=3):
 
 
 def get_results(sarsa_fn, env, alpha, n_runs=3, n_episodes=1000):
-    seeds = range(n_runs)
+    seeds = np.arange(n_runs) * 10000
     returns = np.zeros((n_episodes, n_runs))
     lengths = np.zeros((n_episodes, n_runs))
     times = np.zeros((n_episodes, n_runs))

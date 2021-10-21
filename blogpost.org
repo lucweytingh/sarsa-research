@@ -275,8 +275,8 @@ that we have way less update steps and time to look at: the SARSA agent simply
 fell off more often and quickly!
 
 #+CAPTION: Mean episode return over SARSA and expected SARSA for the FrozenLake-v1 env
-#+NAME:   fig:cliffwalk
-[[plots/FrozenLake-v1.png]]
+#+NAME:   fig:frozenlake
+[[./src/plots/FrozenLake-v1.png]]
 
 ** =
 #+CAPTION: Mean episode return SARSA and Expected SARSA for the CliffWalking-v0 env

@@ -16,7 +16,7 @@
 
 For the Blackjack-v0 env:
 #+BEGIN_SRC shell
-python src/run.py Blackjack-v0 --n_episodes 10000
+python src/run.py Blackjack-v0 --n_episodes 100000
 #+END_SRC
 
 For the Copy-v0 env:
