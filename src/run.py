@@ -11,7 +11,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def run(env_name, n_episodes=3000, n_optimize=20, n_runs=200):
+def run(env_name, n_episodes=3000, n_optimize=5, n_runs=50):
     optim_seeds = np.arange(1, n_optimize + 1).tolist()
     run_seeds = (np.arange(1, n_runs + 1) * 1000).tolist()
     optimize_params.run(env_name, seeds=optim_seeds, n_episodes=n_episodes)
