@@ -1,0 +1,36 @@
+#+BIND: org-export-use-babel nil
+#+TITLE: Get_Results
+#+AUTHOR: Luc Weytingh
+#+EMAIL: <lucweytingh321@gmail.com>
+#+DATE: October 21, 2021
+#+LATEX: \setlength\parindent{0pt}
+#+LaTeX_HEADER: \usepackage{minted}
+#+LATEX_HEADER: \usepackage[margin=0.8in]{geometry}
+#+LATEX_HEADER_EXTRA:  \usepackage{mdframed}
+#+LATEX_HEADER_EXTRA: \BeforeBeginEnvironment{minted}{\begin{mdframed}}
+#+LATEX_HEADER_EXTRA: \AfterEndEnvironment{minted}{\end{mdframed}}
+#+MACRO: NEWLINE @@latex:\\@@ @@html:<br>@@
+#+PROPERTY: header-args :exports both :session get_results :cache :results value
+#+OPTIONS: ^:nil
+#+LATEX_COMPILER: pdflatex
+
+For the Blackjack-v0 env:
+#+BEGIN_SRC shell
+python src/run.py Blackjack-v0 --n_episodes 10000
+#+END_SRC
+
+For the Copy-v0 env:
+#+BEGIN_SRC shell
+python src/run.py Copy-v0
+#+END_SRC
+
+For the FrozenLake-v0 env:
+#+BEGIN_SRC shell
+python src/run.py FrozenLake-v0
+#+END_SRC
+
+
+For the Taxi-v3 env:
+#+BEGIN_SRC shell
+python src/run.py Taxi-v3
+#+END_SRC
