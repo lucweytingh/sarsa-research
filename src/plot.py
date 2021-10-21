@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import math
 import numpy as np
 from src.utils import running_mean
 
@@ -48,7 +49,7 @@ def plot_returns_over_variable(
     """
     if xvar_name == "time":
         # convert x to us
-        x = (x * 100000).astype(int)
+        x = (x * 100000).round().astype(int)
     if ax is None:
         ax = plt.gca()
     if color is None:
@@ -72,11 +73,18 @@ def plot_returns_over_variable(
         ] = x2avg_episode_return
 
     # mean_x = np.mean(x, axis=1)
-    mean_episode_returns = np.nanmean(x2avg_episode_returns, axis=1)
-    std_episode_returns = np.nanstd(x2avg_episode_returns, axis=1)
+    running_mean_n = int(nof_x / 30)
+    x2avg_episode_returns_running = np.array(
+        [running_mean(l, n=running_mean_n) for l in x2avg_episode_returns.T]
+    ).T
+    mean_episode_returns = np.nanmean(x2avg_episode_returns_running, axis=1)
+    std_episode_returns = np.nanstd(x2avg_episode_returns_running, axis=1)
+    # std_episode_returns_running = np.array(
+    #     [running_mean(l, n=running_mean_n) for l in x2avg_episode_returns.T]
+    # ).T
 
     # to smooth the plot, we use a running mean for the returns
-    running_mean_n = int(nof_x / 30)
+
     running_mean_episode_returns = running_mean(
         mean_episode_returns, n=running_mean_n
     )
@@ -89,7 +97,7 @@ def plot_returns_over_variable(
     )  # np.cumsum(mean_x)[:-running_mean_n]
     if xvar_name == "time":
         # convert us to ms
-        cumsum_x = cumsum_x.astype(int)
+        cumsum_x = cumsum_x.astype(int) / 100000
     ax.fill_between(
         cumsum_x,
         running_mean_episode_returns + running_std_episode_returns,
@@ -101,7 +109,10 @@ def plot_returns_over_variable(
     ax.plot(
         cumsum_x, running_mean_episode_returns, color=color, label=alg_name
     )
-    ax.set_xlabel(f"{xvar_name} (ms)")
+    if xvar_name == "time":
+        ax.set_xlabel(f"{xvar_name} (ms)")
+    else:
+        ax.set_xlabel(xvar_name)
     if show_ylabel:
         ax.set_ylabel("Mean episodic return")
 
