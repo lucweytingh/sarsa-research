@@ -15,6 +15,7 @@
 #+PROPERTY: header-args :exports both :session blogpost :cache :results value
 #+OPTIONS: ^:nil toc:nil
 #+LATEX_COMPILER: pdflatex
+#+BIBLIOGRAPHY: refs plain
 
 
 * Introduction
