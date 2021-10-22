@@ -313,7 +313,16 @@ In the blackjack environment both algorithms attain relatively little increase
 in the mean episodic return. This is due to the high level of stochasticity,
 which means the game is not really "solvable" in the same way that the Taxi
 environment is. Even a player that plays perfectly will often lose, but simply
-less than a poorly playing player.
+less than a poorly playing player. There is lots of variance during the
+training process, which again can be attributed to the large amount of
+randomness that is inherent to the game.
+
+Both in terms of the number of updates, and the time, SARSA outperforms ESARSA
+in terms of mean episodic return. This could be due to the large amount of
+variance inherent to the game, which means that ESARSA cannot exploit the lower
+variance updates which it produces. Besides this there are only two actions in
+the game making the expectation cheap to compute, also resulting in little
+difference in total necessary computation time.
 
 
 ** =Frozenlake=
