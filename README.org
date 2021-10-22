@@ -31,32 +31,31 @@ parameters:
 PROJECT_DIR=/path/to/this/project/
 #+END_SRC
 
-* Usage
-
-** Hyperparameter optimization (required)
-
-To find optimal hyperparameters for an environment, run the following script:
-
-#+BEGIN_SRC sh
-python optimize_params.py <env name>
+* Generating plots
+To generate the plots shown in the blogpost, run:
+For the Blackjack-v0 env:
+#+BEGIN_SRC shell
+python src/run.py Blackjack-v0 --n_episodes 100000 --n_optimize 5 --n_runs 50
 #+END_SRC
 
-For an overview of the available options, run:
-
-#+BEGIN_SRC sh
-python optimize_params.py --help
+For the Copy-v0 env:
+#+BEGIN_SRC shell
+python src/run.py Copy-v0 --n_optimize 5 --n_runs 50
 #+END_SRC
 
-** Running experiments
-
-Run an experiment for an environment by running the following script:
-
-#+BEGIN_SRC sh
-python run.py <env name>
+For the FrozenLake-v1 env:
+#+BEGIN_SRC shell
+python src/run.py FrozenLake-v1 --n_optimize 5 --n_runs 50
 #+END_SRC
 
-For an overview of the available options, run:
 
-#+BEGIN_SRC sh
-python run.py --help
+For the Taxi-v3 env:
+#+BEGIN_SRC shell
+python src/run.py Taxi-v3 --n_optimize 5 --n_runs 50
+#+END_SRC
+
+For an overview of all available options, run:
+
+#+BEGIN_SRC shell
+python src/run.py --help
 #+END_SRC
