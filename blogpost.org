@@ -66,11 +66,11 @@ some additional text here.>>
 # receive if it takes action $A$ from state $S$?
 
 Of course, before training, we do not know the Q-function, i.e. how valuable
-each action is[fn:: If we would know this, we would not really need to learn
+each action is [fn:: If we would know this, we would not really need to learn
 anything.]. Both in SARSA and ESARSA, we let an agent interact with our
 environment to generate experience. Using this experience, we update the
-Q-function, and since the agent's policy is based on the Q-function, so is
-the policy (and behaviour) of the agent.
+Q-function, and since the agent's policy is based on the Q-function, so is the
+policy (and behaviour) of the agent.
 
 However, by letting our agent base its behaviour on the very Q-function we are
 trying to optimize, we may get a form of ``tunnel vision'', where the agent
@@ -124,7 +124,7 @@ is expected to reach better performance in fewer update steps than SARSA,
 because the update step is supposed to extract more information from one
 experience, and so, has a higher *sample efficiency* than SARSA.
 
-<<TODO: introduce the idea of "sample" (= "one experience")?>>
+# <<TODO: introduce the idea of "sample" (= "one experience")?>>
 
 #   assigns a numerical value to each state $S$ and
 # action $A$ that can be taken from it, we find some value for the pair $(S, A)$
@@ -163,13 +163,16 @@ the return (how much reward the algorithm receives).
 
 # ESARSA draws more reliable information from each sample due to the
 # expectation it computes
-Of course, since the theory /should/ be correct (in theory), our hypothesis is
-that the practical experiments support the theoretical claims. In the plots, we
-expect to observe that ESARSA learns faster when we observe the amount of
-samples it needs, and thus, has a higher sample efficiency. Likewise, we expect
-SARSA to learn faster than ESARSA when we observe the return as a function of
-the time elapsed, because the latter has a higher computational complexity (and
-so, takes longer for every sample).
+Of course, since the theory /should/ be correct, our hypothesis is that the
+practical experiments support the theoretical claims. In the plots, we expect
+to observe that ESARSA learns faster when we observe the amount of samples it
+needs, and thus, has a higher sample efficiency. Likewise, we expect SARSA to
+finish the required number of episodes faster than ESARSA because the latter
+has a higher computational complexity (and so, takes longer for every
+sample). This means that we expect similar performance when we observe the
+speed at which the algorithms learn as a function of the time
+elapsed. Dependent on the stochasticity and complexity of the task at hand, we
+can expect these differences to be more or less pronounced.
 
 * Method
 
@@ -191,7 +194,7 @@ experiments, we selected 4 tabular tasks from the gym library: =Copy-v0=,
 For a fair comparison, the strengths and weaknesses of SARSA and ESARSA have to
 be taken into account. Due to the distinct update rules for the Q functions
 they estimate, SARSA and ESARSA behave differently in environments with
-different amounts of observability, uncertainty and actions`. Therefore, the
+different amounts of observability, uncertainty and actions. Therefore, the
 first two environments (=Copy-v0= and =Taxi-v2=) are fully observable with
 deterministic transition functions and the other two (Blackjack-v0 and
 FrozenLake-v1) are not fully observable and introduce uncertainty.
@@ -217,14 +220,14 @@ stochastic.
 ** Seeds
 
 Some of the environments that we run our algorithms on are stochastic (that is
-to say: they involve some randomness). This means that we can expect slightly
-different results every time we interact with the environment, even if our
-policy is equal. Given that it is important for the research we perform to be
-reproducible, we seed our environments using some constants. A seed ensures
-that we can expect the /same/ randomness every time we seed with the same
-integer. To ensure that we are not overfitting to a particular seed, we also
-make sure to execute multiple runs with different seeds whenever we train an
-algorithm in an environment.
+to say: they involve some randomness). Our algorithm is stochastic aswell. This
+means that we can expect slightly different results every time we interact with
+the environment, even if our policy is equal. Given that it is important for
+the research we perform to be reproducible, we seed our environments using some
+constants. A seed ensures that we can expect the /same/ randomness every time
+we seed with the same integer. To ensure that we are not overfitting to a
+particular seed, we also make sure to execute multiple runs with different
+seeds whenever we train an algorithm in an environment.
 
 
 ** Hyperparameters
