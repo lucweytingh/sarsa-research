@@ -34,7 +34,7 @@ def run(env_name, n_episodes=3000, n_optimize=5, n_runs=50):
     plot_results(
         alg2results,
         env_name,
-        fname=env_name,
+        fname=f"plots/{env_name} ({n_runs} runs)",
         running_mean_n=5000,
     )
 

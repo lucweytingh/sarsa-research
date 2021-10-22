@@ -34,3 +34,9 @@ For the Taxi-v3 env:
 #+BEGIN_SRC shell
 python src/run.py Taxi-v3 --n_optimize 5 --n_runs 50
 #+END_SRC
+
+
+For the CliffWalking-v0 env:
+#+BEGIN_SRC shell
+python src/run.py CliffWalking-v0 --n_episodes 1000 --n_optimize 5 --n_runs 50
+#+END_SRC
