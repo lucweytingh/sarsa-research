@@ -15,9 +15,11 @@ def perform_grid_search(
     alpha learning rate"""
     print(f"Finding Optimal Alpha for {sarsa_alg}")
     alpha2performance = {}
+    n_seeds = len(random_seeds)
     for alpha in np.linspace(0.001, 1, nof_alphas):
         perfs = []
-        for seed in random_seeds:
+        alpha_rounded = round(alpha, 3)
+        for i, seed in enumerate(random_seeds, 1):
             np.random.seed(seed)
             random.seed(seed)
             env.seed(seed)
@@ -28,7 +30,8 @@ def perform_grid_search(
             )
             perf = np.mean(episode_returns_sarsa[-100:])
             perfs.append(perf)
-            print(seed, alpha, perf)
+            print(f"alpha {alpha_rounded} ({i}/{n_seeds})", end="\r")
+        print(f"alpha {alpha_rounded} done")
         alpha2performance[alpha] = np.mean(perfs)
     opt_alpha = max(alpha2performance, key=alpha2performance.get)
     return opt_alpha

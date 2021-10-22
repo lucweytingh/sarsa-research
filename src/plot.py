@@ -116,7 +116,7 @@ def plot_returns_over_variable(
     )
     ax.plot(cumsum_x, mean_episode_returns, color=color, label=alg_name)
     if xvar_name == "time":
-        ax.set_xlabel(f"{xvar_name} (ms)")
+        ax.set_xlabel(f"{xvar_name} (s)")
     else:
         ax.set_xlabel(xvar_name)
     if show_ylabel:

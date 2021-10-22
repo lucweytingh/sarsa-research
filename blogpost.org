@@ -15,6 +15,7 @@
 #+PROPERTY: header-args :exports both :session blogpost :cache :results value
 #+OPTIONS: ^:nil toc:nil
 #+LATEX_COMPILER: pdflatex
+#+BIBLIOGRAPHY: refs plain
 
 
 * Introduction
@@ -201,10 +202,10 @@ FrozenLake-v1) are not fully observable and introduce uncertainty.
 
 To better understand the tasks that our algorithms will be up against, lets
 have a closer look at the chosen environments. Copy-v0 is a simple toy problem,
-the task is to copy symbols from an input to an output tape.  Taxi-v2
-introduces a bit more complexity. It tasks agents with picking up and dropping
-off a passenger at particular locations. These two problems should be solvable
-by both algorithms quite easily, and we expect to see the theoretical tradeoff
+the task is to copy symbols from an input to an output tape. Taxi-v2 introduces
+a bit more complexity. It tasks agents with picking up and dropping off a
+passenger at particular locations. These two problems should be solvable by
+both algorithms quite easily, and we expect to see the theoretical tradeoff
 quite clearly.The goal in Blackjack-v0 is to find a winning card playing
 strategy against a computer dealer. Blackjack is a simple game as far as card
 games go, but a nontrivial task for our RL algorithm, nonetheless. We selected
@@ -270,15 +271,59 @@ fair comparison.
 #+NAME:   fig:copy
 [[./plots/Copy-v0 (50 runs).png]]
 
+
+When observing the plots in Figure [[fig:copy]], we see that notably ESARSA
+outperforms SARSA, attaining a much higher mean episodic return. On the left
+hand side, we see that the rate at which the algorithms learn are similar, with
+SARSA learning slightly more per update 2500 updates, which is not in line with
+our expectations. This advantage quickly disappears, though, as ESARSA
+continues to rise to a mean episodic return of 5 and a SARSA reaches no higher
+than 2.5. On the right hand side, we see a similar pattern, SARSA learns and
+finishes significantly faster, but fails to reach the same mean episodic return
+as ESARSA. There is a high amount of variance, and contrary to our expectation
+the variance is higher for ESARSA, than SARSA.
+
 ** =Taxi=
 #+CAPTION: Mean episode return over SARSA and expected SARSA for the Taxi-v0 env
 #+NAME:   fig:taxi
 [[./plots/Taxi-v3 (50 runs).png]]
 
+Figure [[fig:taxi]] displays the learning curves of SARSA and ESARSA for the
+Taxi-v3 environment.Both reach a mean episodic return of approximately 0,
+meaning they learn the environment fully. As expected, in terms of number of
+updates expected ESARSA outperforms SARSA, taking about half the number of
+updates as SARSA to reach the same level of performance.
+
+In terms of computational time required, then, ESARSA also outperforms
+SARSA. This is contrary to our initial expectations, but can be explained by
+the fact that the episodes of well-performing agents in the Taxi environment
+are shorter, as they drop off their passengers efficiently. In this case, this
+meant that ESARSA quickly learned to end its episodes quickly, and also
+required less update steps in total (which we can see on the left hand
+side). If we look at the amount of time per update step, SARSA is still faster
+than ESARSA (taking about the same amount of time for 1.5 times more
+updates. Both algorithms have little variance across runs.
+
 ** =Blackjack=
 #+CAPTION: Mean episode return over SARSA and expected SARSA for the Blackjack-v0 env
 #+NAME:   fig:blackjack
 [[./plots/Blackjack-v0 (5000 ep, 50 runs).png]]
+
+In the blackjack environment both algorithms attain relatively little increase
+in the mean episodic return. This is due to the high level of stochasticity,
+which means the game is not really "solvable" in the same way that the Taxi
+environment is. Even a player that plays perfectly will often lose, but simply
+less than a poorly playing player. There is lots of variance during the
+training process, which again can be attributed to the large amount of
+randomness that is inherent to the game.
+
+Both in terms of the number of updates, and the time, SARSA outperforms ESARSA
+in terms of mean episodic return. This could be due to the large amount of
+variance inherent to the game, which means that ESARSA cannot exploit the lower
+variance updates which it produces. Besides this there are only two actions in
+the game making the expectation cheap to compute, also resulting in little
+difference in total necessary computation time.
+
 
 ** =Frozenlake=
 We can see clearly that within a short number of steps and within a short
