@@ -15,7 +15,6 @@
 #+PROPERTY: header-args :exports both :session blogpost :cache :results value
 #+OPTIONS: ^:nil toc:nil
 #+LATEX_COMPILER: pdflatex
-#+BIBLIOGRAPHY: refs plain
 
 
 * Introduction
@@ -266,6 +265,15 @@ keep it at a constant value for both of our algorithms, while still assuring
 fair comparison.
 
 * Results
+The optimal hyperparameters correspond to:
+|               | SARSA | ESARSA |
+|---------------+-------+--------|
+| Copy-v0       | 0.276 |  0.345 |
+| Taxi-v3       | 0.139 |  0.931 |
+| Blackjack-v0  | 0.104 |  0.173 |
+| FrozenLake-v1 | 0.139 |  0.208 |
+
+
 ** =Copy=
 #+CAPTION: Mean episode return over SARSA and expected SARSA for the Copy-v0 env
 #+NAME:   fig:copy
