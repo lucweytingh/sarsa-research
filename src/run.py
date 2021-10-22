@@ -20,6 +20,7 @@ def run(env_name, n_episodes=3000, n_optimize=5, n_runs=50):
     env.seed(0)
     alg2results = {}
     for name, alg in NAME2ALG.items():
+        print(name)
         alpha = exp2results[env_name][name]["opt_alpha"]
         alg2results[name] = get_results(
             alg,
@@ -45,8 +46,8 @@ def get_results(sarsa_fn, env, alpha, n_runs=3, seeds=None, n_episodes=1000):
     lengths = np.zeros((n_episodes, n_runs))
     times = np.zeros((n_episodes, n_runs))
     for r in range(n_runs):
-        seed = int(seeds[r] * 10)
-        print(seed, end="\r")
+        seed = seeds[r]
+        print(f"... ({r+1}/{n_runs})", end="\r")
         random.seed(seed)
         np.random.seed(seed)
         env.reset()
@@ -60,6 +61,7 @@ def get_results(sarsa_fn, env, alpha, n_runs=3, seeds=None, n_episodes=1000):
         returns[:, r] = episode_returns
         lengths[:, r] = episode_lengths
         times[:, r] = episode_times
+    print("... done")
     return {
         "episode_returns": returns,
         "xvar2results": {"nof updates": lengths, "time": times},
