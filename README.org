@@ -43,7 +43,7 @@ For the Copy-v0 env:
 python src/run.py Copy-v0 --n_optimize 5 --n_runs 50
 #+END_SRC
 
-For the FrozenLake-v0 env:
+For the FrozenLake-v1 env:
 #+BEGIN_SRC shell
 python src/run.py FrozenLake-v1 --n_optimize 5 --n_runs 50
 #+END_SRC
