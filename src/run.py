@@ -46,6 +46,7 @@ def get_results(sarsa_fn, env, alpha, n_runs=3, seeds=None, n_episodes=1000):
     times = np.zeros((n_episodes, n_runs))
     for r in range(n_runs):
         seed = int(seeds[r] * 10)
+        print(seed, end="\r")
         random.seed(seed)
         np.random.seed(seed)
         env.reset()
