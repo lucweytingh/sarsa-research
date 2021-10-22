@@ -30,3 +30,33 @@ parameters:
 #+BEGIN_SRC sh
 PROJECT_DIR=/path/to/this/project/
 #+END_SRC
+
+* Usage
+
+** Hyperparameter optimization (required)
+
+To find optimal hyperparameters for an environment, run the following script:
+
+#+BEGIN_SRC sh
+python optimize_params.py <env name>
+#+END_SRC
+
+For an overview of the available options, run:
+
+#+BEGIN_SRC sh
+python optimize_params.py --help
+#+END_SRC
+
+** Running experiments
+
+Run an experiment for an environment by running the following script:
+
+#+BEGIN_SRC sh
+python run.py <env name>
+#+END_SRC
+
+For an overview of the available options, run:
+
+#+BEGIN_SRC sh
+python run.py --help
+#+END_SRC
